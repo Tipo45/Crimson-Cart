@@ -69,11 +69,16 @@ export default function Bestdeals() {
                 Best Deals
             </h1>
 
-            <Carousel plugins={[plugin.current]} onMouseEnter={plugin.current.stop}
-                onMouseLeave={plugin.current.play} opts={{
-                    align: "start",
-                    loop: true,
-                }}>
+            <Carousel
+  plugins={[plugin.current]}
+  onMouseEnter={() => plugin.current?.stop()}
+  onMouseLeave={() => plugin.current?.play()}
+  opts={{
+    align: "start",
+    loop: true,
+  }}
+>
+
                 <CarouselContent className="-ml-4">
 
                     {items.map((item, index) => (
