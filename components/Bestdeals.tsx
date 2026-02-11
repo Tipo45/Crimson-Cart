@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import {
     Card,
     CardContent,
@@ -14,26 +15,24 @@ import {
 import { motion } from "framer-motion";
 import Autoplay from "embla-carousel-autoplay";
 import Chickenimg from "../components/images/chicken.jpg";
-import Fishimg from "../components/images/chicken.jpg";
-import Spaghettiimg from "../components/images/chicken.jpg";
-import Noodlesimg from "../components/images/chicken.jpg";
-import Yamimg from "../components/images/chicken.jpg";
-import Garriimg from "../components/images/chicken.jpg";
-import Gardeneggimg from "../components/images/chicken.jpg";
-import Carrotimg from "../components/images/chicken.jpg";
-import Beansimg from "../components/images/chicken.jpg";
-import Chipsimg from "../components/images/chicken.jpg";
-import Image from "next/image";
+import Fishimg from "../components/images/fish.jpg";
+import Spaghettiimg from "../components/images/spaghetti.jpg";
+import Noodlesimg from "../components/images/noodles.jpg";
+import Cassavaimg from "../components/images/cassava.jpg";
+import Garriimg from "../components/images/garri.jpg";
+import Eggimg from "../components/images/eggs.jpg";
+import Carrotimg from "../components/images/carrots.jpg";
+import Beansimg from "../components/images/beans.jpg";
+import Chipsimg from "../components/images/chips.jpg";
 
 const items = [
     { image: Chickenimg, name:"Chicken", price: 100 },
     { image: Fishimg, name: "Fish", price: 200 },
-    { image: Chickenimg, name: "Chicken", price: 300 },
     { image: Spaghettiimg, name: "Spaghetti", price: 400 },
     { image: Noodlesimg, name: "Noodles", price: 500 },
-    { image: Yamimg, name: "Yam", price: 600 },
+    { image: Cassavaimg, name: "Cassava", price: 600 },
     { image: Garriimg, name: "Garri", price: 700 },
-    { image: Gardeneggimg, name: "Garden Egg", price: 800 },
+    { image: Eggimg, name: "Eggs", price: 800 },
     { image: Carrotimg, name: "Carrot", price: 900 },
     { image: Beansimg, name: "Beans", price: 1000 },
     { image: Chipsimg, name: "Chips", price: 1100 },
@@ -95,85 +94,89 @@ export default function Bestdeals() {
               "
                         >
                             <Card className="h-full">
-                                <CardContent
-                                    className="
-    flex h-[320px] flex-col
-    rounded-lg border border-secondary-button-hover
-    bg-tertiary p-6
-  "
-                                >
-                                    {/* Product name */}
-                                    {/* <div className="text-lg font-semibold text-secondary">
-                                        {item.name}
-                                    </div> */}
-                                    <Image src={item.image} alt={item.name} />
+  <CardContent
+    className="
+      flex h-[320px] flex-col
+      rounded-lg border border-secondary-button-hover
+      bg-tertiary p-6
+    "
+  >
+    {/* Image */}
+    <div className="relative h-40 w-full mb-4">
+      <Image
+        src={item.image}
+        alt={item.name}
+        fill
+        sizes="100vw"
+      />
+    </div>
 
-                                    {/* Spacer to push pricing + footer down */}
-                                    <div className="flex-1" />
+    {/* Push pricing & footer down */}
+    <div className="flex-1" />
 
-                                    {/* Price */}
-                                    <div className="-mb-2 flex items-center gap-3">
-                                        <span className="text-sm font-medium text-secondary/60 line-through">
-                                            ₦ {Number(item.price * 1.5).toLocaleString()}
-                                        </span>
+    {/* Price */}
+    <div className="mb-2 flex items-center gap-3">
+      <span className="text-sm font-medium text-secondary/60 line-through">
+        ₦ {Number(item.price * 1.5).toLocaleString()}
+      </span>
 
-                                        <span className="text-lg font-bold text-secondary">
-                                            ₦ {Number(item.price).toLocaleString()}
-                                        </span>
-                                    </div>
+      <span className="text-lg font-bold text-secondary">
+        ₦ {Number(item.price).toLocaleString()}
+      </span>
+    </div>
 
-                                    {/* Footer */}
-                                    <CardFooter className="flex flex-col px-0 pb-0">
-                                        {/* Quantity selector */}
-                                        <div className="flex items-center justify-center gap-4 py-4">
-                                            <motion.button
-                                                whileTap={quantities[index] > 1 ? { scale: 0.9 } : undefined}
-                                                disabled={(quantities[index] || 1) === 1}
-                                                onClick={() => decreaseQty(index)}
-                                                className={`
-          flex h-8 w-8 items-center justify-center rounded-full
-          border border-secondary-button-hover
-          text-secondary transition
-          ${(quantities[index] || 1) === 1
-                                                        ? "opacity-40 cursor-not-allowed"
-                                                        : "hover:bg-secondary/10"}
-        `}
-                                            >
-                                                −
-                                            </motion.button>
+    {/* Footer */}
+    <CardFooter className="flex flex-col px-0 pb-0">
+      {/* Quantity selector */}
+      <div className="flex items-center justify-center gap-4 py-4">
+        <motion.button
+          whileTap={quantities[index] > 1 ? { scale: 0.9 } : undefined}
+          disabled={(quantities[index] || 1) === 1}
+          onClick={() => decreaseQty(index)}
+          className={`
+            flex h-8 w-8 items-center justify-center rounded-full
+            border border-secondary-button-hover
+            text-secondary transition
+            ${(quantities[index] || 1) === 1
+              ? "opacity-40 cursor-not-allowed"
+              : "hover:bg-secondary/10"}
+          `}
+        >
+          −
+        </motion.button>
 
-                                            <span className="min-w-[24px] text-center text-sm font-semibold text-secondary">
-                                                {quantities[index] || 1}
-                                            </span>
+        <span className="min-w-[24px] text-center text-sm font-semibold text-secondary">
+          {quantities[index] || 1}
+        </span>
 
-                                            <motion.button
-                                                whileTap={{ scale: 0.9 }}
-                                                onClick={() => increaseQty(index)}
-                                                className="flex h-8 w-8 items-center justify-center rounded-full border border-secondary-button-hover text-secondary hover:bg-secondary/10"
-                                            >
-                                                +
-                                            </motion.button>
-                                        </div>
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          onClick={() => increaseQty(index)}
+          className="flex h-8 w-8 items-center justify-center rounded-full border border-secondary-button-hover text-secondary hover:bg-secondary/10"
+        >
+          +
+        </motion.button>
+      </div>
 
-                                        <motion.button
-                                            whileHover={{ y: -2, scale: 1.03 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                                            className="
-        w-full rounded-md
-        bg-primary-button
-        py-3 text-sm font-semibold
-        text-primary
-        shadow-md hover:shadow-lg
-        focus:outline-none focus:ring-2 focus:ring-secondary/40
-      "
-                                        >
-                                            Add to Cart
-                                        </motion.button>
-                                    </CardFooter>
-                                </CardContent>
+      <motion.button
+        whileHover={{ y: -2, scale: 1.03 }}
+        whileTap={{ scale: 0.95 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        className="
+          w-full rounded-md
+          bg-primary-button
+          py-3 text-sm font-semibold
+          text-primary
+          shadow-md hover:shadow-lg
+          focus:outline-none focus:ring-2 focus:ring-secondary/40
+        "
+      >
+        Add to Cart
+      </motion.button>
+    </CardFooter>
+  </CardContent>
+</Card>
 
-                            </Card>
                         </CarouselItem>
                     ))}
 

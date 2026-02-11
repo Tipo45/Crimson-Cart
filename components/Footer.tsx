@@ -17,7 +17,7 @@ export default function Footer() {
           {/* BRAND + SOCIALS */}
           <div>
             <h1 className="text-xl font-bold tracking-tight">
-              <a href="/">E-Commerce</a>
+              <a href="/">Crimson Cart</a>
             </h1>
 
             <p className="mt-4 max-w-sm text-sm text-primary/80">
@@ -104,7 +104,7 @@ export default function Footer() {
         {/* BOTTOM BAR */}
         <div className="mt-12 border-t border-primary/20 pt-6 text-center">
           <p className="text-xs text-primary/70">
-            &copy; {new Date().getFullYear()} E-Commerce. All rights reserved.
+            &copy; {new Date().getFullYear()} Tipotek. All rights reserved.
           </p>
         </div>
 
