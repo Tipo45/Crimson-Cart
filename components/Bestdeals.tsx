@@ -23,6 +23,7 @@ import Gardeneggimg from "../components/images/chicken.jpg";
 import Carrotimg from "../components/images/chicken.jpg";
 import Beansimg from "../components/images/chicken.jpg";
 import Chipsimg from "../components/images/chicken.jpg";
+import Image from "next/image";
 
 const items = [
     { image: Chickenimg, name:"Chicken", price: 100 },
@@ -105,7 +106,7 @@ export default function Bestdeals() {
                                     {/* <div className="text-lg font-semibold text-secondary">
                                         {item.name}
                                     </div> */}
-                                    <img src={item.image} alt={item.name} />
+                                    <Image src={item.image} alt={item.name} />
 
                                     {/* Spacer to push pricing + footer down */}
                                     <div className="flex-1" />
