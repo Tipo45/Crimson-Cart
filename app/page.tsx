@@ -12,7 +12,7 @@ import Promo from "@/components/Promo";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-primary font-sans dark:bg-black">
+    <div className="min-h-screen bg-tertiary font-sans dark:bg-black">
       <Navbar />
 
       <main className="pt-20 px-6 lg:px-10">

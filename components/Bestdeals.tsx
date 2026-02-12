@@ -65,7 +65,7 @@ export default function Bestdeals() {
         <section className="container mx-auto px-6 py-12">
 
             {/* Section title */}
-            <h1 className="mb-8 text-xl font-bold text-secondary">
+            <h1 className="mb-8 text-xl tablet:text-2xl font-bold text-secondary">
                 Best Deals
             </h1>
 

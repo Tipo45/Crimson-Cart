@@ -84,7 +84,7 @@ export default function Navbar() {
       </AnimatePresence>
 
       {/* Top Header */}
-      <header className="fixed top-0 left-0 right-0 z-20 flex items-center justify-between border-b border-divider bg-primary px-4 py-3 shadow-md dark:bg-black">
+      <header className="fixed top-0 left-0 right-0 z-20 flex items-center justify-between border-b border-divider bg-tertiary px-4 py-3 shadow-md dark:bg-black">
         {/* Left: Menu + Logo */}
         <div className="flex items-center gap-3">
           {/* Mobile menu button */}
