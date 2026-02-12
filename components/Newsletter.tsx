@@ -16,14 +16,14 @@ export default function Newsletter () {
         />
 
         {/* Dark Overlay */}
-        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 bg-black/30" />
       </div>
 
       {/* Text Content */}
       <div className="absolute inset-0 flex items-center">
         <div className="w-full px-6 lg:px-10">
           <div className="max-w-2xl">
-            
+            <input type="text" className="bg-tertiary rounded-full px-2 py-3" placeholder="your email" />
           </div>
         </div>
       </div>
