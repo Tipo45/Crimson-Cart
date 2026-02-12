@@ -1,33 +1,71 @@
+import Image from "next/image";
 import Link from "next/link";
+import Heroimg from "../components/images/hero2.png";
 
 export default function Hero() {
   return (
-    <section>
-        <div className="grid gird-cols-1 lg:grid-cols-2 gap-8">
-            <div className="py-8">
-                <h2 className="text-xs">logo</h2>
-                <div className="py-6">
-                    <ul className="flex space-x-3 text-lg">
-                        <li><Link href="/whats-new">What's new</Link></li>
-                        <li><Link href="/new-offers">New Offers</Link></li>
-                    </ul>
-                </div>
+    <section className="w-full px-4 tablet:px-8 xl:px-16 py-12">
+      <div className="grid grid-cols-1 tablet:grid-cols-2 items-center gap-10">
 
-                <div>
-                    <h1 className="text-4xl font-extrabold truncate">Shop with Crimson Cart</h1>
-                    <p className="text-md py-3">
-                        Discover a world of great deals and exclusive offers.
-                        Shop now and experience the best shopping experience.
-                    </p>
-                    <div className="space-x-3 py-2">
-                        <button className="bg-primary-button text-tertiary text-lg font-bold rounded-lg px-2 py-3">Shop Now</button>
-                        <button className="bg-primary-button text-tertiary text-lg font-bold rounded-lg px-2 py-3">Contact Us</button>
-                    </div>
-                </div>
+        {/* LEFT CONTENT */}
+        <div className="space-y-6">
+
+          {/* Top Links */}
+          <div className="space-y-4">
+            <h2 className="text-sm font-semibold tracking-wide text-primary">
+              Crimson Cart
+            </h2>
+
+            <ul className="flex gap-4 text-sm lg:text-base">
+              <li>
+                <Link href="/whats-new" className="hover:underline">
+                  What's New
+                </Link>
+              </li>
+              <li>
+                <Link href="/new-offers" className="hover:underline">
+                  New Offers
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Main Content */}
+          <div className="space-y-4">
+            <h1 className="text-3xl tablet:text-4xl xl:text-5xl font-extrabold leading-tight text-primary-text">
+              Shop Smarter with Crimson Cart
+            </h1>
+
+            <p className="text-base tablet:text-lg text-primary-text/80 max-w-lg">
+              Discover unbeatable deals, trending products, and exclusive
+              offers tailored just for you. Elevate your shopping experience
+              today.
+            </p>
+
+            <div className="flex gap-4 pt-2">
+              <button className="bg-primary-button text-tertiary font-semibold rounded-lg px-6 py-3 hover:opacity-90 transition">
+                Shop Now
+              </button>
+
+              <button className="border border-primary-button text-primary-button font-semibold rounded-lg px-6 py-3 hover:bg-primary-button hover:text-tertiary transition">
+                Contact Us
+              </button>
             </div>
-
-            <div></div>
+          </div>
         </div>
+
+        {/* RIGHT IMAGE */}
+        <div className="relative w-full h-[300px] tablet:h-[400px] xl:h-[500px]">
+          <Image
+            src={Heroimg}
+            alt="Crimson Cart Shopping"
+            fill
+            priority
+            className="object-cover rounded-2xl"
+          />
+        </div>
+
+      </div>
     </section>
-  )
+  );
 }

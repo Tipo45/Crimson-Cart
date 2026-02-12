@@ -97,7 +97,7 @@ export default function Navbar() {
           </button>
 
           <h1 className="text-lg font-bold tracking-tight text-secondary lg:text-2xl">
-            <Link href="/">Crimson Cart</Link>
+            <Link href="/" className="py-4">Crimson Cart</Link>
           </h1>
         </div>
 

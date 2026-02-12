@@ -108,6 +108,7 @@ export default function Bestdeals() {
         alt={item.name}
         fill
         sizes="100vw"
+        className="rounded-lg"
       />
     </div>
 
