@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-secondary text-primary mt-10">
+    <footer className="relative z-10 w-full bg-secondary text-primary mt-10">
       <div className="mx-auto max-w-7xl px-4 py-14">
 
         {/* TOP SECTION */}
