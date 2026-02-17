@@ -3,6 +3,43 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@keyframes cyberGlow {
+  0%, 100% {
+    color: theme('colors.secondary');
+    text-shadow:
+      0 0 5px theme('colors.secondary'),
+      0 0 10px theme('colors.secondary'),
+      0 0 20px theme('colors.secondary');
+  }
+
+  40% {
+    color: white;
+    text-shadow:
+      0 0 6px white,
+      0 0 12px white,
+      0 0 24px white;
+  }
+
+  50% {
+    color: white;
+    text-shadow:
+      0 0 3px white,
+      0 0 6px white;
+  }
+
+  60% {
+    color: theme('colors.secondary');
+    text-shadow:
+      0 0 8px theme('colors.secondary'),
+      0 0 16px theme('colors.secondary');
+  }
+}
+
+.animate-cyber-glow {
+  animation: cyberGlow 2s ease-in-out infinite;
+}
+
+
 @theme inline {
   --breakpoint-*: initial;
   --breakpoint-lg: 640px;

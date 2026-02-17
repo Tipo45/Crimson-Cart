@@ -15,16 +15,47 @@ export default function FAQs() {
     },
     {
       value: "item-2",
-      trigger: "Can I change my subscription plan?",
+      trigger: "Do I need an account to make a purchase?",
       content:
-        "Yes, you can upgrade or downgrade your plan at any time from your account settings. Changes will be reflected in your next billing cycle.",
+        "Yes, you'll need to create a buyer account to complete purchases. This helps us track your orders and provide a personalized experience.",
     },
     {
       value: "item-3",
-      trigger: "What payment methods do you accept?",
+      trigger: "Is my payment information secure?",
       content:
-        "We accept all major credit cards, PayPal, and bank transfers. All payments are processed securely through our payment partners.",
+        "Yes. We use industry-standard encryption and never store full payment details on our servers. All transactions are processed through secure payment gateways.",
     },
+    {
+      value: "item-4",
+      trigger: "Do I need to download an app from an app store?",
+      content:
+        "No! This is a Progressive Web App (PWA). When you visit our URL, you'll be prompted to 'Install' or 'Add to Home Screen'. This creates an app-like icon on your device without needing to visit any app store.",
+    },
+    // {
+    //   value: "item-5",
+    //   trigger: " What happens if I don't install the app?",
+    //   content:
+    //     "You can still use the website normally in your browser. Installing simply provides a faster, more convenient experience with offline access.",
+    // },
+    
+    // {
+    //   value: "item-6",
+    //   trigger: "I installed the PWA but it's not working offline.",
+    //   content:
+    //     "Some features require an internet connection, but basic browsing of cached products should work offline. Try visiting the site while online first to cache content, then test offline mode.",
+    // },
+    // {
+    //   value: "item-7",
+    //   trigger: "How do I uninstall the PWA?",
+    //   content:
+    //     "On mobile, long-press the app icon and select 'Remove from Home Screen' or 'Uninstall.' On desktop, use your browser's settings to remove the installed app.",
+    // },
+    // {
+    //   value: "item-8",
+    //   trigger: "Who do I contact for help?",
+    //   content:
+    //     "You can reach our support team at [email address] or through the 'Contact Us' form in the website footer. We typically respond within 24-48 hours.",
+    // },
   ];
 
   return (
