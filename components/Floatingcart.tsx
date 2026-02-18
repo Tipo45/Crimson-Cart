@@ -37,7 +37,7 @@ export default function FloatingCart() {
           transition={{ type: "spring", stiffness: 260, damping: 20 }}
           className="fixed bottom-6 right-6 z-50"
         >
-          <Link href="/app/login/page.tsx">
+          <Link href="/cart">
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}

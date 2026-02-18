@@ -78,6 +78,7 @@
   --color-warning: #E38B29;
   --color-error: #A31621;
   --color-info: #2F5EA8;
+  --animate-cyber-glow: cyberGlow 2s ease-in-out infinite;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);

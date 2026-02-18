@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Newsletterimg from "../components/images/newsletter.jpg";
+import Newsletterimg from "../public/images/newsletter.jpg";
 
 export default function Newsletter() {
   return (

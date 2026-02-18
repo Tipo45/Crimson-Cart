@@ -17,12 +17,23 @@ export default function Navbar() {
     return () => window.removeEventListener("keydown", handleEsc);
   }, []);
 
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Products", href: "/products" },
     { name: "Categories", href: "/categories" },
     { name: "Brands", href: "/brands" },
-    { name: "Contact", href: "/contact" },
+    { name: "Contact", href: "#footer" },
   ];
 
   return (

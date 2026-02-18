@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Promoimg from "../components/images/hero.jpg";
+import Promoimg from "../public/images/hero.jpg";
 
 export default function Promo() {
   return (

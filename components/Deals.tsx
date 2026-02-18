@@ -1,6 +1,6 @@
 import Image from "next/image";
-import Dealimg from "../components/images/deal1.jpg";
-import Dealimg2 from "../components/images/deal2.jpg";
+import Dealimg from "../public/images/deal1.jpg";
+import Dealimg2 from "../public/images/deal2.jpg";
 
 export default function Deals() {
     return (
@@ -8,7 +8,7 @@ export default function Deals() {
             <div className="grid grid-cols-1 tablet:grid-cols-2 gap-8">
 
                 {/* DEAL 1 */}
-                <div className="relative w-full aspect-[16/9]">
+                <div className="relative w-full aspect-video">
                     <Image
                         src={Dealimg}
                         alt="Deal 1"
@@ -34,7 +34,7 @@ export default function Deals() {
 
 
                 {/* DEAL 2 */}
-                <div className="relative w-full aspect-[16/9]">
+                <div className="relative w-full aspect-video">
                     <Image
                         src={Dealimg2}
                         alt="Deal 2"
@@ -43,14 +43,14 @@ export default function Deals() {
                     />
 
                     {/* Overlay Container */}
-                    <div className="absolute inset-0 flex flex-col justify-between p-6">
+                    <div className="absolute inset-0 flex flex-col justify-between py-6 px-2">
 
                         <div className="space-y-2">
-                            <span className="block tablet:text-xl text-primary font-bold">
+                            <span className="block text-sm tablet:text-xl text-primary font-bold">
                                 Deal of the Week
                             </span>
 
-                            <span className="block tablet:text-xl text-secondary font-bold">
+                            <span className="block tablet:text-xl text-secondary font-bold animate-cyber-glow text-right">
                                 Up to 50% off
                             </span>
                         </div>

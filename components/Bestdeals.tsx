@@ -14,16 +14,16 @@ import {
 } from "./ui/carousel";
 import { motion } from "framer-motion";
 import Autoplay from "embla-carousel-autoplay";
-import Chickenimg from "../components/images/chicken.jpg";
-import Fishimg from "../components/images/fish.jpg";
-import Spaghettiimg from "../components/images/spaghetti.jpg";
-import Noodlesimg from "../components/images/noodles.jpg";
-import Cassavaimg from "../components/images/cassava.jpg";
-import Garriimg from "../components/images/garri.jpg";
-import Eggimg from "../components/images/eggs.jpg";
-import Carrotimg from "../components/images/carrots.jpg";
-import Beansimg from "../components/images/beans.jpg";
-import Chipsimg from "../components/images/chips.jpg";
+import Chickenimg from "../public/images/chicken.jpg";
+import Fishimg from "../public/images/fish.jpg";
+import Spaghettiimg from "../public/images/spaghetti.jpg";
+import Noodlesimg from "../public/images/noodles.jpg";
+import Cassavaimg from "../public/images/cassava.jpg";
+import Garriimg from "../public/images/garri.jpg";
+import Eggimg from "../public/images/eggs.jpg";
+import Carrotimg from "../public/images/carrots.jpg";
+import Beansimg from "../public/images/beans.jpg";
+import Chipsimg from "../public/images/chips.jpg";
 
 const items = [
     { image: Chickenimg, name:"Chicken", price: 100 },

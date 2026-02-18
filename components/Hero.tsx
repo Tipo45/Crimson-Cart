@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import Heroimg from "../components/images/hero2.png";
+import Heroimg from "../public/images/hero2.png";
 
 export default function Hero() {
   return (
