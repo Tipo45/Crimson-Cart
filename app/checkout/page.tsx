@@ -1,5 +1,6 @@
 "use client";
 
+import Navbar from "@/components/Navbar";
 import { useState } from "react";
 
 export default function Checkout() {
@@ -27,7 +28,8 @@ export default function Checkout() {
 
   return (
     <section className="min-h-screen bg-primary py-12 px-4">
-      <div className="max-w-6xl mx-auto">
+      <Navbar />
+      <div className="max-w-6xl mx-auto mt-10">
 
         <h1 className="text-3xl font-bold text-secondary mb-8">
           Checkout
@@ -116,7 +118,7 @@ export default function Checkout() {
                   value={coupon}
                   onChange={(e) => setCoupon(e.target.value)}
                   placeholder="Enter coupon"
-                  className="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-secondary"
+                  className="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-secondary w-30"
                 />
                 <button
                   onClick={applyCoupon}

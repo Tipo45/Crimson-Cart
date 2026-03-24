@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Providers from "./providers";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,7 +15,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Crimson Cart",
+  title: {
+    default: "Crimson Cart",
+    template: "%s | Crimson Cart"
+  },
   description: "Crimson Cart is an e-commerce platform that offers a wide range of products at unbeatable prices.",
 };
 
@@ -22,12 +27,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        
+          {children}
+        
+
       </body>
     </html>
   );

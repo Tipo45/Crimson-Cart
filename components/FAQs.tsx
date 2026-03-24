@@ -4,9 +4,17 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion";
+ import { motion, type Variants } from "framer-motion";
+
+ type FAQItem = {
+  value: string;
+  trigger: string;
+  content: string;
+};
 
 export default function FAQs() {
-  const items = [
+
+  const items: FAQItem[]= [
     {
       value: "item-1",
       trigger: "What is Crimson Cart?",
@@ -37,7 +45,7 @@ export default function FAQs() {
     //   content:
     //     "You can still use the website normally in your browser. Installing simply provides a faster, more convenient experience with offline access.",
     // },
-    
+
     // {
     //   value: "item-6",
     //   trigger: "I installed the PWA but it's not working offline.",
@@ -58,37 +66,69 @@ export default function FAQs() {
     // },
   ];
 
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15 },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5 },
+  },
+};
+
+const headingVariants: Variants = {
+  hidden: { opacity: 0, y: -20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6 },
+  },
+};
+
   return (
-    <section className="relative h-[120vh] mt-10">
-      
-      {/* Sticky FAQ Card */}
-      <div className="sticky top-0 z-10">
+    <section className="relative mt-10">
 
         <div className="flex flex-col items-center justify-center mx-auto py-5 px-6">
-          <h1 className="text-xl tablet:text-3xl font-bold text-secondary mb-10 text-center">
+          <motion.h1
+            variants={headingVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="text-xl tablet:text-3xl font-bold text-secondary mb-10 text-center"
+          >
             Frequently Asked Questions
-          </h1>
+          </motion.h1>
 
-          <Accordion
-            type="single"
-            collapsible
-            defaultValue="item-1"
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
             className="w-full max-w-2xl"
           >
-            {items.map((item) => (
-              <AccordionItem key={item.value} value={item.value}>
-                <AccordionTrigger className="text-lg">
-                  {item.trigger}
-                </AccordionTrigger>
-                <AccordionContent className="px-3">
-                  {item.content}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+            <Accordion type="single" collapsible defaultValue="item-1">
+              {items.map((item) => (
+                <motion.div key={item.value} variants={itemVariants}>
+                  <AccordionItem value={item.value}>
+                    <AccordionTrigger className="text-lg">
+                      {item.trigger}
+                    </AccordionTrigger>
+                    <AccordionContent className="px-3">
+                      {item.content}
+                    </AccordionContent>
+                  </AccordionItem>
+                </motion.div>
+              ))}
+            </Accordion>
+          </motion.div>
         </div>
-
-      </div>
 
     </section>
   );

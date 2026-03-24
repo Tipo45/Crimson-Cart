@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Navbar from "@/components/Navbar";
 
 // type CartItem = {
 //   id: number;
@@ -67,7 +68,8 @@ export default function Cart() {
 
   return (
     <section className="min-h-screen bg-primary py-12 px-4">
-      <div className="max-w-6xl mx-auto">
+      <Navbar />
+      <div className="max-w-6xl mx-auto mt-10">
 
         <h1 className="text-3xl font-bold text-secondary mb-8">
           Your Cart

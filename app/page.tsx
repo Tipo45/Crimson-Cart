@@ -10,47 +10,50 @@ import Navbar from "@/components/Navbar";
 import Newsletter from "@/components/Newsletter";
 import Popularcategories from "@/components/Popularcategories";
 import Promo from "@/components/Promo";
+import Providers from "./providers";
 
 
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-primary font-sans dark:bg-black">
-      <Navbar />
+    <Providers>
+      <div className="min-h-screen bg-primary font-sans dark:bg-black">
+        <Navbar />
 
-      <FloatingCart />
+        <FloatingCart />
 
-      <main className="pt-20 px-6 lg:px-10">
-        <div>
-          <Hero />
-        </div>
+        <main className="pt-20 px-6 lg:px-10">
+          <div>
+            <Hero />
+          </div>
 
-        <div>
-          <Bestdeals />
-        </div>
+          <div>
+            <Bestdeals />
+          </div>
 
-        <div>
-          <Popularcategories />
-        </div>
+          <div>
+            <Popularcategories />
+          </div>
 
-        <div>
-          <Promo />
-        </div>
+          <div>
+            <Promo />
+          </div>
 
-        <div>
-          <Deals />
-        </div>
+          <div>
+            <Deals />
+          </div>
 
-        <div>
-          <Newsletter />
-        </div>
+          <div>
+            <Newsletter />
+          </div>
 
-        <div>
-          <FAQs />
-        </div>
-      </main>
+          <div>
+            <FAQs />
+          </div>
+        </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </Providers>
   );
 }
