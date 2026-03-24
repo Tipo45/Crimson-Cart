@@ -140,9 +140,13 @@ export default function Navbar() {
         </nav> */}
 
         {/* Auth Button */}
-        <button className="rounded-lg bg-primary-button px-4 py-2 text-xs font-bold text-tertiary transition hover:opacity-90">
+
+        <Link
+          href="/signin"
+          className="inline-block rounded-lg bg-primary-button px-4 py-2 text-xs font-bold text-tertiary transition hover:opacity-90"
+        >
           Sign in
-        </button>
+        </Link>
       </header>
     </>
   );
