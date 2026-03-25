@@ -8,7 +8,14 @@ import { motion } from "framer-motion";
 
 export default function Footer() {
   return (
-    <footer id="footer" className="relative z-0 w-full bg-secondary text-primary">
+    // <footer id="footer" className="relative z-0 w-full bg-secondary text-primary">
+    <motion.footer
+      initial={{ opacity: 0, y: 100 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="sticky bottom-0 w-full bg-secondary text-primary"
+    >
       <div className="mx-auto max-w-7xl px-4 py-14">
 
         {/* TOP SECTION */}
@@ -109,6 +116,7 @@ export default function Footer() {
         </div>
 
       </div>
-    </footer>
+    </motion.footer>
+    // </footer>
   );
 }

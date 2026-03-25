@@ -24,7 +24,27 @@ export default function Home() {
 
         <FloatingCart />
 
-        <main className="pt-20 px-6 lg:px-10">
+        <div className="relative">
+
+          {/* MAIN CONTENT */}
+          <main className="relative z-10 bg-primary pt-20 px-6 lg:px-10">
+            <Hero />
+            <Bestdeals />
+            <Popularcategories />
+            <Promo />
+            <Deals />
+            <Newsletter />
+            <FAQs />
+          </main>
+
+          {/* FOOTER WRAPPER */}
+          {/* <div className="relative h-[500px]">
+            <Footer />
+          </div> */}
+
+        </div>
+
+        {/* <main className="pt-20 px-6 lg:px-10">
           <div>
             <Hero />
           </div>
@@ -52,7 +72,7 @@ export default function Home() {
           <div>
             <FAQs />
           </div>
-        </main>
+        </main> */}
 
         <Footer />
       </div>
