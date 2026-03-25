@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import Bestdeals from "@/components/Bestdeals";
 import Deals from "@/components/Deals";
 import FAQs from "@/components/FAQs";
@@ -18,6 +19,7 @@ export default function Home() {
   return (
     <Providers>
       <div className="min-h-screen bg-primary font-sans dark:bg-black">
+
         <Navbar />
 
         <FloatingCart />

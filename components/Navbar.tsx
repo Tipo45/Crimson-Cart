@@ -8,6 +8,8 @@ import { FaTimes } from "react-icons/fa";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [showNavbar, setShowNavbar] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   // Close sidebar on ESC
   useEffect(() => {
@@ -28,6 +30,27 @@ export default function Navbar() {
       });
     }
   };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (Math.abs(currentScrollY - lastScrollY) < 5) return;
+
+      if (currentScrollY < 50) {
+        setShowNavbar(true);
+      } else if (currentScrollY > lastScrollY) {
+        setShowNavbar(false);
+      } else {
+        setShowNavbar(true);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -106,7 +129,18 @@ export default function Navbar() {
       </AnimatePresence>
 
       {/* Top Header */}
-      <header className="fixed z-20 flex items-center justify-between border-b border-divider bg-tertiary/60 px-4 py-3 shadow-md dark:bg-black top-4 left-4 right-4 rounded-xl backdrop-blur-md">
+      <motion.header initial={{ opacity: 0, y: -60 }}
+        animate={{
+          opacity: showNavbar ? 1 : 0,
+          y: showNavbar ? 0 : -80,
+        }}
+        transition={{
+          duration: 0.6,
+          delay: 0.5,
+          type: "spring",
+          stiffness: 80,
+          damping: 12,
+        }} className="fixed z-20 flex items-center justify-between border-b border-divider bg-tertiary/60 px-4 py-3 shadow-md dark:bg-black top-4 left-4 right-4 rounded-xl backdrop-blur-md">
         {/* Left: Menu + Logo */}
         <div className="flex items-center gap-3">
           {/* Mobile menu button */}
@@ -147,7 +181,7 @@ export default function Navbar() {
         >
           Sign in
         </Link>
-      </header>
+      </motion.header>
     </>
   );
 }
