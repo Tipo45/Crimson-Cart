@@ -23,8 +23,9 @@ export default function Settings() {
     const { user } = useUser();
     const currentUser = useQuery(api.user.getCurrentUser);
     const updatePhoneNumber = useMutation(api.user.addPhoneNumber);
+    
 
-    console.log("Current User id:", user?.id);
+
 
     const handleUpdate = async () => {
         await updatePhoneNumber({
