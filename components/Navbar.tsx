@@ -120,7 +120,7 @@ export default function Navbar() {
                 <li className="pt-6">
                   <Unauthenticated>
                     <SignInButton mode="modal">
-                      <button onClick={() => { (toast.success("Welcome back!")) }} className="bg-primary-button px-6 py-3 rounded-lg text-tertiary font-semibold">
+                      <button className="bg-primary-button px-6 py-3 rounded-lg text-tertiary font-semibold">
                         Sign In
                       </button>
                     </SignInButton>
@@ -181,7 +181,7 @@ export default function Navbar() {
 
           <Authenticated>
             <button onClick={goToBuyerPage}>
-              <FaRegUserCircle size={25} />
+              <FaRegUserCircle size={25} className="text-secondary" />
             </button>
             {/* <UserButton /> */}
           </Authenticated>

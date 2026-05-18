@@ -23,7 +23,7 @@ export default function Settings() {
     const { user } = useUser();
     const currentUser = useQuery(api.user.getCurrentUser);
     const updatePhoneNumber = useMutation(api.user.addPhoneNumber);
-    
+
 
 
 
@@ -90,9 +90,7 @@ export default function Settings() {
                             <EditableField label="Email" value={user?.emailAddresses[0]?.emailAddress || ""} />
                             <EditableField label="Phone Number" value={currentUser?.phoneNumber || "not provided"} />
 
-                            {currentUser?.phoneNumber ? (<button onClick={() => setShowForm(!showForm)} className="px-2 py-4 bg-secondary text-tertiary rounded-2xl flex hover:opacity-80">
-                                Change Phone Number <FaPlusCircle className="ml-4 mt-0.5" size={20} />
-                            </button>):(<button onClick={() => setShowForm(!showForm)} className="px-2 py-4 bg-secondary text-tertiary rounded-2xl flex hover:opacity-80">
+                            {currentUser?.phoneNumber ? ("") : (<button onClick={() => setShowForm(!showForm)} className="px-2 py-4 bg-secondary text-tertiary rounded-2xl flex hover:opacity-80">
                                 Add Phone Number <FaPlusCircle className="ml-4 mt-0.5" size={20} />
                             </button>)}
                         </div>
@@ -107,7 +105,7 @@ export default function Settings() {
                         className="mt-8 bg-tertiary border border-border rounded-xl p-6"
                     >
                         <h3 className="text-lg font-semibold mb-6 text-primary-text">
-                        New Phone Number
+                            New Phone Number
                         </h3>
 
                         <div className="grid grid-cols-1 tablet:grid-cols-2 gap-4">

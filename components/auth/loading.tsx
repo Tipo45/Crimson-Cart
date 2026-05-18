@@ -8,7 +8,7 @@ export default function Loading() {
     <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="flex flex-col items-center gap-6">
         <div className="flex h-24 w-24 items-center justify-center rounded-full bg-red-600 shadow-xl shadow-red-200 animate-pulse">
-          <span className="font-extrabold text-secondary"><Image src={logo} alt="logo image" /></span>
+          <span className="font-extrabold"><Image src={logo} alt="logo image" /></span>
         </div>
         <div className="text-center">
           <p className="text-xl font-semibold text-slate-900">Loading Crimson Cart...</p>

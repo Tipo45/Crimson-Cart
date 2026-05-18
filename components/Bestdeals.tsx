@@ -154,6 +154,7 @@ export default function Bestdeals() {
                             alt={item.name}
                             fill
                             sizes="100vw"
+                            style={{ objectFit: "cover" }}
                             className="rounded-lg"
                           />
                         </motion.div>

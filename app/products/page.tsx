@@ -11,8 +11,7 @@ import {
     FaFilter,
     FaTimes,
 } from "react-icons/fa";
-import Image from "next/image";
-import Providers from "../providers";
+// import Image from "next/image";
 
 type CategoryListProps = {
     activeCategory: string

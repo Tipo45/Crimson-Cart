@@ -11,3 +11,4 @@ export default defineSchema({
     .index("by_token", ["tokenIdentifier"]),
     
 });
+
