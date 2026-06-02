@@ -25,6 +25,12 @@ type CartItem = {
 export default function Cart() {
   const router = useRouter();
   const { user, isSignedIn } = useUser();
+  const currentUser = useQuery(api.user.getCurrentUser);
+  const goToCheckOutPage = () => {
+  if (!currentUser) return;
+
+  router.push(`/checkout/${currentUser._id}`);
+};
 
   // ================= STORE USER =================
   const storeUser = useMutation(api.user.store);
@@ -221,7 +227,7 @@ export default function Cart() {
                 <span>₦ {total.toLocaleString()}</span>
               </div>
 
-              <button onClick={() => router.push("/checkout")} className="w-full bg-secondary text-white py-3 rounded-lg font-semibold hover:opacity-90 transition">
+              <button onClick={goToCheckOutPage} className="w-full bg-secondary text-white py-3 rounded-lg font-semibold hover:opacity-90 transition">
                 Proceed to Checkout
               </button>
             </div>
