@@ -4,11 +4,22 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { MdOutlineShoppingCart } from "react-icons/md";
+import { api } from "@/convex/_generated/api";
+import { useQuery } from "convex/react";
+import { useRouter } from "next/navigation";
 
 export default function FloatingCart() {
-  const [itemCount, setItemCount] = useState(0);
+  const cartItems = useQuery(api.user.getCart);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const router = useRouter();
+  const currentUser = useQuery(api.user.getCurrentUser);
+
+  const goToCartPage = () => {
+  if (!currentUser) return;
+
+  router.push(`/cart/${currentUser._id}`);
+};
 
   // Hide on scroll down, show on scroll up
   useEffect(() => {
@@ -27,6 +38,14 @@ export default function FloatingCart() {
     return () => window.removeEventListener('scroll', controlNavbar);
   }, [lastScrollY]);
 
+  // const itemCount =
+  // cartItems
+  //   ? cartItems.reduce((t, i) => t + i.quantity, 0)
+  //   : 0;
+
+  const itemCount =
+  cartItems?.reduce((t, i) => t + (i?.quantity ?? 0), 0) ?? 0;
+
   return (
     <AnimatePresence>
       {isVisible && (
@@ -37,11 +56,12 @@ export default function FloatingCart() {
           transition={{ type: "spring", stiffness: 260, damping: 20 }}
           className="fixed bottom-6 right-6 z-50"
         >
-          <Link href="/cart">
+          
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               className="bg-secondary text-2xl text-tertiary rounded-full p-4 shadow-lg flex items-center justify-center group relative cursor-pointer"
+              onClick={goToCartPage}
             >
               <MdOutlineShoppingCart />
               
@@ -49,7 +69,7 @@ export default function FloatingCart() {
                 <motion.span
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="absolute -top-2 -right-2 bg-charcoal text-primary text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center"
+                  className="absolute -top-2 -right-2 text-secondary text-sm font-bold rounded-full h-6 w-6 flex items-center justify-center"
                 >
                   {itemCount}
                 </motion.span>
@@ -59,7 +79,6 @@ export default function FloatingCart() {
                 View Cart
               </span>
             </motion.button>
-          </Link>
         </motion.div>
       )}
     </AnimatePresence>

@@ -14,34 +14,45 @@ import {
 } from "./ui/carousel";
 import { motion, type Variants } from "framer-motion";
 import Autoplay from "embla-carousel-autoplay";
-import Chickenimg from "../public/images/chicken.jpg";
-import Fishimg from "../public/images/fish.jpg";
-import Spaghettiimg from "../public/images/spaghetti.jpg";
-import Noodlesimg from "../public/images/noodles.jpg";
-import Cassavaimg from "../public/images/cassava.jpg";
-import Garriimg from "../public/images/garri.jpg";
-import Eggimg from "../public/images/eggs.jpg";
-import Carrotimg from "../public/images/carrots.jpg";
-import Beansimg from "../public/images/beans.jpg";
-import Chipsimg from "../public/images/chips.jpg";
-
-const items = [
-  { image: Chickenimg, name: "Chicken", price: 100 },
-  { image: Fishimg, name: "Fish", price: 200 },
-  { image: Spaghettiimg, name: "Spaghetti", price: 400 },
-  { image: Noodlesimg, name: "Noodles", price: 500 },
-  { image: Cassavaimg, name: "Cassava", price: 600 },
-  { image: Garriimg, name: "Garri", price: 700 },
-  { image: Eggimg, name: "Eggs", price: 800 },
-  { image: Carrotimg, name: "Carrot", price: 900 },
-  { image: Beansimg, name: "Beans", price: 1000 },
-  { image: Chipsimg, name: "Chips", price: 1100 },
-];
+import { useMutation, useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { toast } from "sonner";
+import { Id } from "@/convex/_generated/dataModel";
+import { useClerk, useUser } from "@clerk/nextjs";
 
 export default function Bestdeals() {
 
+  const { isSignedIn } = useUser();
+  const { redirectToSignIn } = useClerk();
   const [quantities, setQuantities] = React.useState<Record<number, number>>({});
   const [ripples, setRipples] = React.useState<Record<number, number>>({});
+  const items = useQuery(api.user.getProducts);
+  const addToCart = useMutation(api.user.addToCart);
+  const plugin = React.useRef(
+    Autoplay({ delay: 5000, stopOnInteraction: true })
+  )
+  const [loadingProduct, setLoadingProduct] =
+    React.useState<Id<"products"> | null>(null);
+
+  if (items === undefined) {
+    return (
+      <section className="container mx-auto px-6 py-12">
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!items || items.length === 0) {
+    return (
+      <section className="container mx-auto px-6 py-12">
+        <div className="text-center h-64 flex items-center justify-center">
+          <p className="text-gray-500">No products available at the moment.</p>
+        </div>
+      </section>
+    );
+  }
 
   const increaseQty = (index: number) => {
     setQuantities((prev) => ({
@@ -64,10 +75,6 @@ export default function Bestdeals() {
     }));
   };
 
-  const plugin = React.useRef(
-    Autoplay({ delay: 5000, stopOnInteraction: true })
-  )
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -86,6 +93,43 @@ export default function Bestdeals() {
     },
   };
 
+  const toCart = async (
+    productId: Id<"products">,
+    quantity: number
+  ) => {
+
+    //  // Check if user is signed in
+    // if (!isClerkLoaded) {
+    //   // Still loading Clerk, wait
+    //   return;
+    // }
+    
+    if (!isSignedIn) {
+      // User is not signed in, show toast and redirect to sign in
+      toast.error("Please sign in to add items to your cart");
+      redirectToSignIn({
+        redirectUrl: window.location.href,
+      });
+      return;
+    }
+
+    try {
+      setLoadingProduct(productId);
+
+      await addToCart({
+        productId,
+        quantity,
+      });
+
+      toast.success("Item added to cart successfully!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to add item to cart");
+    } finally {
+      setLoadingProduct(null);
+    }
+  };
+
   return (
     <section className="container mx-auto px-6 py-12">
 
@@ -102,8 +146,6 @@ export default function Bestdeals() {
 
       <Carousel
         plugins={[plugin.current]}
-        onMouseEnter={() => plugin.current?.stop()}
-        onMouseLeave={() => plugin.current?.play()}
         opts={{
           align: "start",
           loop: true,
@@ -117,7 +159,7 @@ export default function Bestdeals() {
           <CarouselContent className="-ml-4">
 
             {items.map((item, index) => (
-              <motion.div key={item.name} variants={cardVariants}              >
+              <motion.div key={item._id} variants={cardVariants}              >
                 <CarouselItem
                   className="
                 pl-4
@@ -150,7 +192,7 @@ export default function Bestdeals() {
                           className="relative h-40 w-full mb-4 overflow-hidden rounded-lg"
                         >
                           <Image
-                            src={item.image}
+                            src={item.imageId ? `/api/image/${item.imageId}` : "/placeholder.png"}
                             alt={item.name}
                             fill
                             sizes="100vw"
@@ -162,6 +204,9 @@ export default function Bestdeals() {
 
                         {/* Push pricing & footer down */}
                         <div className="flex-1" />
+                        <p className="text-md font-bold text-secondary capitalize">
+                          {item.name}
+                        </p>
 
                         {/* Price */}
                         {/* <div className="mb-2 flex items-center gap-3"> */}
@@ -175,7 +220,7 @@ export default function Bestdeals() {
                             ₦ {Number(item.price * 1.5).toLocaleString()}
                           </span>
 
-                          <span className="text-lg font-bold text-secondary">
+                          <span className="text-md font-bold text-secondary">
                             ₦ {Number(item.price).toLocaleString()}
                           </span></motion.div>
                         {/* </div> */}
@@ -214,20 +259,30 @@ export default function Bestdeals() {
                           </div>
 
                           <motion.button
-                            onClick={() => triggerRipple(index)}
+                            disabled={loadingProduct === item._id}
                             whileHover={{ y: -2, scale: 1.03 }}
                             whileTap={{ scale: 0.95 }}
                             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                            className="
+                            className="relative 
           w-full rounded-md
           bg-primary-button
           py-3 text-sm font-semibold
           text-primary
           shadow-md hover:shadow-lg
           focus:outline-none focus:ring-2 focus:ring-secondary/40
-        "
+        disabled:opacity-50
+    disabled:cursor-not-allowed"  onClick={() => {
+                              triggerRipple(index);
+
+                              toCart(
+                                item._id,
+                                quantities[index] || 1
+                              );
+                            }}
                           >
-                            Add to Cart
+                            {loadingProduct === item._id
+                              ? "Adding..."
+                              : "Add to Cart"}
                             {ripples[index] && (
                               <motion.span
                                 key={ripples[index]}
@@ -266,7 +321,6 @@ export default function Bestdeals() {
         >
           View best deals
         </motion.button>
-        {/* <button className="bg-primary-button text-tertiary font-bold px-4 py-4 rounded-full cursor-pointer hover:bg-primary hover:text-primary-button border hover:border-accent-text">View best deals</button> */}
       </div>
     </section>
   );

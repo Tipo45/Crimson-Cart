@@ -1,69 +1,109 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
+import { useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
+import { useUser } from "@clerk/nextjs";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { toast } from "sonner";
+import { Id } from "@/convex/_generated/dataModel";
 
-// type CartItem = {
-//   id: number;
-//   name: string;
-//   price: number;
-//   quantity: number;
-//   image: string;
-// };
+type CartItem = {
+  _id: Id<"cart">;
+  productId: Id<"products">;
+  name: string;
+  price: number;
+  quantity: number;
+  category: string;
+  imageId?: string;
+  imageUrl?: string;
+};
 
 export default function Cart() {
   const router = useRouter();
+  const { user, isSignedIn } = useUser();
+
+  // ================= STORE USER =================
+  const storeUser = useMutation(api.user.store);
+  // const cartItems = useQuery(api.user.getCart);
+  const cartItems = useQuery(api.user.getCart) as CartItem[] | null | undefined;
+  const removeFromCart = useMutation(api.user.removeFromCart);
+  const updateCartQuantity = useMutation(api.user.updateCartQuantity);
   
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "Beans",
-      price: 120,
-      quantity: 1,
-      image: "/public/images/beans.jpg",
-    },
-    {
-      id: 2,
-      name: "Carrot",
-      price: 80,
-      quantity: 2,
-      image: "/public/images/carrots.jpg",
-    },
-  ]);
 
-  const increaseQty = (id: number) => {
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      )
+  useEffect(() => {
+    if (isSignedIn) {
+      storeUser();
+    }
+  }, [isSignedIn, storeUser]);
+
+  if (cartItems === undefined) {
+    return (
+      <section className="min-h-screen bg-primary py-12 px-4">
+        <Navbar />
+        <div className="max-w-6xl mx-auto mt-10">
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-secondary"></div>
+          </div>
+        </div>
+      </section>
     );
+  }
+
+  if (!cartItems) return <div>Failed to load cart.</div>;
+
+  // const validCartItems = cartItems.filter((item): item is CartItem => {
+  //   return item !== null &&
+  //     typeof item === 'object' &&
+  //     'price' in item &&
+  //     'quantity' in item &&
+  //     'name' in item;
+  // });
+
+  const removeItem = async (item: CartItem) => {
+    try {
+      await removeFromCart({ cartItemId: item._id });
+      toast.success("Item removed from cart");
+    } catch (error) {
+      toast.error("Failed to remove item");
+    }
   };
 
-  const decreaseQty = (id: number) => {
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
-    );
+  const increaseQty = async (item: CartItem) => {
+    try {
+      await updateCartQuantity({
+        cartItemId: item._id,
+        quantity: item.quantity + 1,
+      });
+      toast.success("Quantity updated");
+    } catch (error) {
+      toast.error("Failed to update quantity");
+    }
   };
 
-  const removeItem = (id: number) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
-  };
+    const decreaseQty = async (item: CartItem) => {
+      try {
+        await updateCartQuantity({
+          cartItemId: item._id,
+          quantity: item.quantity - 1,
+        });
+        toast.success("Quantity updated");
+      } catch (error) {
+        toast.error("Failed to update quantity");
+      }
+    };
 
   const subtotal = cartItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
+    (acc, item) => acc + (item.price || 0) * (item.quantity || 0),
     0
   );
 
-  const shipping = cartItems.length > 0 ? 10 : 0;
+  const shippingPercentage = 0.10; // 10% shipping fee
+
+  const shipping = cartItems.length > 0 ? shippingPercentage * subtotal : 0;
   const total = subtotal + shipping;
 
   return (
@@ -72,7 +112,7 @@ export default function Cart() {
       <div className="max-w-6xl mx-auto mt-10">
 
         <h1 className="text-3xl font-bold text-secondary mb-8">
-          Your Cart
+          {user?.firstName || 'Customer'}'s Cart
         </h1>
 
         {/* EMPTY CART STATE */}
@@ -99,12 +139,12 @@ export default function Cart() {
             <div className="lg:col-span-2 space-y-6">
               {cartItems.map((item) => (
                 <div
-                  key={item.id}
+                  key={item._id}
                   className="flex gap-4 bg-white p-4 rounded-xl shadow-sm border"
                 >
                   <div className="relative w-24 h-24">
                     <Image
-                      src={item.image}
+                      src={item.imageUrl || "/placeholder.png"}
                       alt={item.name}
                       fill
                       className="object-cover rounded-lg"
@@ -113,11 +153,11 @@ export default function Cart() {
 
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
-                      <h2 className="font-semibold text-lg text-secondary">
+                      <h2 className="font-semibold text-lg text-secondary capitalize">
                         {item.name}
                       </h2>
                       <p className="text-gray-500 text-sm">
-                        ${item.price}
+                        ₦ {item.price.toLocaleString()}
                       </p>
                     </div>
 
@@ -126,13 +166,12 @@ export default function Cart() {
                       {/* Quantity Controls */}
                       <div className="flex items-center border rounded-lg overflow-hidden">
                         <button
-                          onClick={() => decreaseQty(item.id)}
+                          // onClick={() => decreaseQty(item.id)}
                           disabled={item.quantity === 1}
-                          className={`px-3 py-1 font-bold transition ${
-                            item.quantity === 1
+                          className={`px-3 py-1 font-bold transition ${item.quantity === 1
                               ? "text-gray-400 cursor-not-allowed"
                               : "text-secondary hover:bg-primary"
-                          }`}
+                            }`}
                         >
                           −
                         </button>
@@ -142,7 +181,7 @@ export default function Cart() {
                         </span>
 
                         <button
-                          onClick={() => increaseQty(item.id)}
+                          // onClick={() => increaseQty(item.id)}
                           className="px-3 py-1 text-secondary font-bold hover:bg-primary transition"
                         >
                           +
@@ -150,7 +189,7 @@ export default function Cart() {
                       </div>
 
                       <button
-                        onClick={() => removeItem(item.id)}
+                        onClick={() => removeItem(item)}
                         className="text-sm text-secondary hover:underline"
                       >
                         Remove
@@ -169,17 +208,17 @@ export default function Cart() {
 
               <div className="flex justify-between text-gray-600">
                 <span>Subtotal</span>
-                <span>${subtotal}</span>
+                <span>₦ {subtotal.toLocaleString()}</span>
               </div>
 
               <div className="flex justify-between text-gray-600">
                 <span>Shipping</span>
-                <span>${shipping}</span>
+                <span>₦ {shipping.toLocaleString()}</span>
               </div>
 
               <div className="border-t pt-4 flex justify-between font-bold text-secondary">
                 <span>Total</span>
-                <span>${total}</span>
+                <span>₦ {total.toLocaleString()}</span>
               </div>
 
               <button onClick={() => router.push("/checkout")} className="w-full bg-secondary text-white py-3 rounded-lg font-semibold hover:opacity-90 transition">
