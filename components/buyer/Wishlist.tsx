@@ -5,12 +5,18 @@ import WishlistSkeleton from "../skeletonui/buyer/WishlistSkeleton";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Providers from "@/app/providers";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+
+type wishList = {
+    _id: string;
+    name: string;
+    price: number;
+    image: string;  
+}
 
 type WishlistItem = {
-    id: number;
-    name: string;
-    price: string;
-    image: string;
+_id: string;
 };
 
 export default function Wishlist() {
@@ -21,32 +27,7 @@ export default function Wishlist() {
         return () => clearTimeout(timer);
     }, []);
 
-    const wishlistItems: WishlistItem[] = [
-        {
-            id: 1,
-            name: "Handcrafted Leather Bag",
-            price: "₦189.00",
-            image: "/products/bag.jpg",
-        },
-        {
-            id: 2,
-            name: "Ceramic Mug Set",
-            price: "₦42.00",
-            image: "/products/mug.jpg",
-        },
-        {
-            id: 3,
-            name: "Wool Scarf — Charcoal",
-            price: "₦67.00",
-            image: "/products/scarf.jpg",
-        },
-        {
-            id: 4,
-            name: "Minimalist Wrist Watch",
-            price: "₦129.00",
-            image: "/products/watch.jpg",
-        },
-    ];
+    const wishlistItems: WishlistItem[] = useQuery(api.user.getWishlist) || [];
 
     return (
         <>
@@ -69,7 +50,7 @@ export default function Wishlist() {
                             },
                         }} className="grid grid-cols-2 tablet:grid-cols-3 xl:grid-cols-4 gap-6">
                         {wishlistItems.map((item) => (
-                            <WishlistCard key={item.id} item={item} />
+                            <WishlistCard key={item._id} item={item} />
                         ))}
                     </motion.div>
                 </div></Providers>)}
@@ -92,21 +73,22 @@ function WishlistCard({ item }: WishlistCardProps) {
       hover:shadow-md
     ">
             <div className="relative w-full h-40 bg-muted-section">
-                <Image
+                {/* <Image
                     src={item.image}
                     alt={item.name}
                     fill
                     className="object-cover"
-                />
+                /> */}
             </div>
 
             <div className="p-4 space-y-3">
                 <h3 className="text-sm font-medium text-primart-text line-clamp-2">
-                    {item.name}
+                    {item._id}
+                    {/* {item.name} */}
                 </h3>
 
                 <p className="text-secondary font-semibold">
-                    {item.price}
+                    {/* {item.price} */}
                 </p>
 
                 <div className="flex gap-2 pt-2">
