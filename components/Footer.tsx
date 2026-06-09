@@ -40,19 +40,41 @@ export default function Footer() {
 
               <ul className="flex gap-4">
                 {[
-                  { Icon: FaFacebook, label: "Facebook" },
-                  { Icon: FaTiktok, label: "TikTok" },
-                  { Icon: FaXTwitter, label: "Twitter / X" },
-                  { Icon: FaInstagram, label: "Instagram" },
-                ].map(({ Icon, label }) => (
+                  {
+                    Icon: FaFacebook,
+                    label: "Facebook",
+                    href: "#",
+                    hoverColor: "hover:text-[#1877F2]" // Facebook Blue
+                  },
+                  {
+                    Icon: FaTiktok,
+                    label: "TikTok",
+                    href: "#",
+                    hoverColor: "hover:text-[#69C9D0]" // TikTok Cyan
+                  },
+                  {
+                    Icon: FaXTwitter,
+                    label: "Twitter / X",
+                    href: "#",
+                    hoverColor: "hover:text-black dark:hover:text-white" // Twitter/X Black/White
+                  },
+                  {
+                    Icon: FaInstagram,
+                    label: "Instagram",
+                    href: "#",
+                    hoverColor: "hover:text-[#E4405F]" // Instagram Pink/Red
+                  },
+                ].map(({ Icon, label, href, hoverColor }) => (
                   <li key={label}>
                     <motion.a
-                      href="#"
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       aria-label={label}
                       whileHover={{ y: -4, scale: 1.15 }}
                       whileTap={{ scale: 0.95 }}
                       transition={{ type: "spring", stiffness: 300, damping: 18 }}
-                      className="inline-flex items-center justify-center rounded-full p-2 text-primary hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent/50"
+                      className={`inline-flex items-center justify-center rounded-full p-2 text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all duration-300`}
                     >
                       <Icon className="text-lg" />
                     </motion.a>

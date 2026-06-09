@@ -5,9 +5,14 @@ import Image from "next/image";
 import Link from "next/link";
 import Heroimg from "../public/images/hero2.png";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export default function Hero() {
+  const router = useRouter();
 
+  const handleNext = () => {
+    router.push("/products")
+  }
   
   return (
     <section className="w-full px-4 tablet:px-8 xl:px-16 py-12">
@@ -98,6 +103,7 @@ export default function Hero() {
               className="flex gap-4 pt-2"
             >
               <motion.button
+              onClick={handleNext}
                 variants={{
                   hidden: { opacity: 0, scale: 0.8 },
                   visible: {
@@ -106,7 +112,7 @@ export default function Hero() {
                     transition: { type: "spring", stiffness: 200 },
                   },
                 }}
-                className="bg-primary-button text-tertiary font-semibold rounded-lg px-6 py-3 hover:opacity-90 transition"
+                className="cursor-pointer bg-primary-button text-tertiary font-semibold rounded-lg px-6 py-3 hover:opacity-90 transition"
               >
                 Shop Now
               </motion.button>
@@ -120,7 +126,7 @@ export default function Hero() {
                     transition: { type: "spring", stiffness: 200 },
                   },
                 }}
-                className="border border-primary-button text-primary-button font-semibold rounded-lg px-6 py-3 hover:bg-primary-button hover:text-tertiary transition"
+                className="cursor-pointer border border-primary-button text-primary-button font-semibold rounded-lg px-6 py-3 hover:bg-primary-button hover:text-tertiary transition"
               >
                 Contact Us
               </motion.button>

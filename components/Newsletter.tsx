@@ -66,7 +66,7 @@ export default function Newsletter() {
             text-xs tablet:text-sm
             font-semibold
             hover:opacity-90
-            transition
+            transition cursor-pointer
           "
         >
           Subscribe

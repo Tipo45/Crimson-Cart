@@ -97,12 +97,6 @@ export default function Bestdeals() {
     productId: Id<"products">,
     quantity: number
   ) => {
-
-    //  // Check if user is signed in
-    // if (!isClerkLoaded) {
-    //   // Still loading Clerk, wait
-    //   return;
-    // }
     
     if (!isSignedIn) {
       // User is not signed in, show toast and redirect to sign in
@@ -270,7 +264,7 @@ export default function Bestdeals() {
           text-primary
           shadow-md hover:shadow-lg
           focus:outline-none focus:ring-2 focus:ring-secondary/40
-        disabled:opacity-50
+        disabled:opacity-50 cursor-pointer
     disabled:cursor-not-allowed"  onClick={() => {
                               triggerRipple(index);
 
@@ -319,7 +313,7 @@ export default function Bestdeals() {
           whileTap={{ scale: 0.95 }}
           className="bg-primary-button text-tertiary font-bold px-4 py-4 rounded-full cursor-pointer hover:bg-primary hover:text-primary-button border hover:border-accent-text"
         >
-          View best deals
+          View more
         </motion.button>
       </div>
     </section>

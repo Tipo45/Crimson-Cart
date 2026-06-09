@@ -92,6 +92,67 @@ export const addPhoneNumber = mutation({
   },
 });
 
+// add to wishlist
+export const addToWishlist = mutation({
+  args: {
+    productId: v.id("products"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return await ctx.db.insert("wishlist", {
+      userId: user._id,
+      productId: args.productId,
+    });
+  },
+});
+
+// get wishlist items
+export const getWishlist = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      return [];
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+
+    if (!user) {
+      return [];
+    }
+
+    const wishListItems = await ctx.db
+      .query("wishlist")
+      .withIndex("by_user", (q) =>
+        q.eq("userId", user._id)
+      )
+      .collect();
+
+      return wishListItems;
+},
+});
+
 // add to cart
 export const addToCart = mutation({
   args: {
@@ -275,7 +336,32 @@ export const getProducts = query({
   args: {},
   handler: async (ctx) => {
     const products = await ctx.db.query("products").collect();
-    return products;
+
+     return await Promise.all(
+      products.map(async (product) => {
+        const reviews = await ctx.db
+          .query("reviews")
+          .withIndex("by_product", (q) =>
+            q.eq("productId", product._id)
+          )
+          .collect();
+
+    const reviewCount = reviews.length;
+
+        const averageRating =
+          reviewCount > 0
+            ? reviews.reduce(
+                (sum, review) => sum + (review.rating ?? 0),
+                0
+              ) / reviewCount
+            : 0;
+    return {
+          ...product,
+          averageRating,
+          reviewCount,
+        };
+      })
+    );
   },
 });
 
@@ -290,20 +376,127 @@ export const getProductById = query({
   },
 });
 
-// get products by category
-// export const getProductsByCategory = query({
-//   args: {
-//     category: v.string(),
-//   },
-//   handler: async (ctx, args) => {
-//     const products = await ctx.db
-//       .query("products")
-//       .withIndex("by_category", (q) => q.eq("category", args.category))
-//       .collect();
+// get categories
+export const getCategories = query({
+  args: {},
+  handler: async (ctx) => {
+    const products = await ctx.db
+      .query("products")
+      .collect();
 
-//     return products;
-//   },
-// });
+    return [...new Set(products.map(p => p.category))];
+  },
+});
+
+// get products by category
+export const getProductsByCategory = query({
+  args: {
+    category: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const products = await ctx.db
+      .query("products")
+      .withIndex("by_category", (q) => q.eq("category", args.category))
+      .collect();
+
+    return products;
+  },
+});
+
+
+// add ratings and reviews
+export const addReview = mutation({
+  args: {
+    productId: v.id("products"),
+    rating: v.number(),
+    review: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const product = await ctx.db.get(args.productId);
+
+    if (!product) {
+      throw new Error("Product not found");
+    }
+
+    // Seller cannot review own product
+    if (product.userId === user._id) {
+      throw new Error("You cannot review your own product");
+    }
+
+    const existingReview = await ctx.db
+      .query("reviews")
+      .withIndex("by_product_and_user", (q) =>
+        q.eq("productId", args.productId)
+         .eq("userId", user._id)
+      )
+      .unique();
+
+    if (existingReview) {
+      throw new Error("You already reviewed this product");
+    }
+
+    return await ctx.db.insert("reviews", {
+      productId: args.productId,
+      userId: user._id,
+      rating: args.rating,
+      review: args.review,
+    });
+  },
+});
+
+// query ratings and reviews for a product
+export const getRatings = query({
+  args: {},
+  handler: async (ctx) => {
+    const products = await ctx.db.query("products").collect();
+
+    return await Promise.all(
+      products.map(async (product) => {
+        const reviews = await ctx.db
+          .query("reviews")
+          .withIndex("by_product", (q) =>
+            q.eq("productId", product._id)
+          )
+          .collect();
+
+        const reviewCount = reviews.length;
+
+        const averageRating =
+          reviewCount === 0
+            ? 0
+            : reviews.reduce(
+                (sum, review) => sum + (review.rating ?? 0),
+                0
+              ) / reviewCount;
+
+        return {
+          ...product,
+          averageRating: Number(
+            averageRating.toFixed(1)
+          ),
+          reviewCount,
+        };
+      })
+    );
+  },
+});
 
 // display user details
 export const getCurrentUser = query({

@@ -1,14 +1,8 @@
+import { api } from "@/convex/_generated/api";
+import { useQuery } from "convex/react";
+
 export default function Popularcategories() {
-  const categories = [
-    "Vegetables",
-    "Fruits",
-    "Grains",
-    "Meat",
-    "Dairy",
-    "Seafood",
-    "Spices",
-    "Oils",
-  ];
+  const categories = useQuery(api.user.getCategories) ?? [];
 
   return (
     <section className="container mx-auto py-12">
@@ -31,10 +25,10 @@ export default function Popularcategories() {
               p-10 
               text-center 
               hover:bg-secondary/5 
-              transition
+              transition cursor-pointer
             "
           >
-            <h2 className="text-lg font-semibold text-primary-text">
+            <h2 className="text-lg font-semibold text-primary-text capitalize">
               {category}
             </h2>
           </div>

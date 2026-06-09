@@ -84,7 +84,7 @@ export default function Navbar() {
                 Crimson Cart
               </Link>
 
-              <button onClick={() => setIsOpen(false)}>
+              <button onClick={() => setIsOpen(false)} className="cursor-pointer">
                 <FaTimes size={20} />
               </button>
             </div>
@@ -120,7 +120,7 @@ export default function Navbar() {
                 <li className="pt-6">
                   <Unauthenticated>
                     <SignInButton mode="modal">
-                      <button className="bg-primary-button px-6 py-3 rounded-lg text-tertiary font-semibold">
+                      <button className="bg-primary-button px-6 py-3 rounded-lg text-tertiary font-semibold cursor-pointer">
                         Sign In
                       </button>
                     </SignInButton>
@@ -129,7 +129,7 @@ export default function Navbar() {
                   <Authenticated>
                     <div className="flex flex-col items-center gap-4">
                       <button onClick={goToBuyerPage}>
-                        <FaRegUserCircle size={40} className="text-primary" />
+                        <FaRegUserCircle size={40} className="text-primary cursor-pointer" />
                       </button>
                       {/* <UserButton /> */}
                     </div>
@@ -159,7 +159,7 @@ export default function Navbar() {
       >
         {/* LEFT */}
         <div className="flex items-center gap-3">
-          <button onClick={() => setIsOpen(true)} className="text-secondary">
+          <button onClick={() => setIsOpen(true)} className="text-secondary cursor-pointer">
             <IoMdMenu size={20} />
           </button>
 
@@ -181,7 +181,7 @@ export default function Navbar() {
 
           <Authenticated>
             <button onClick={goToBuyerPage}>
-              <FaRegUserCircle size={25} className="text-secondary" />
+              <FaRegUserCircle size={25} className="text-secondary cursor-pointer" />
             </button>
             {/* <UserButton /> */}
           </Authenticated>

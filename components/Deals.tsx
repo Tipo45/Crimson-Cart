@@ -24,7 +24,7 @@ export default function Deals() {
                         </span>
 
                         <div className="flex justify-end">
-                            <button className="bg-secondary text-sm text-tertiary font-bold px-5 py-2 rounded-full">
+                            <button className="bg-secondary text-sm text-tertiary font-bold px-5 py-2 rounded-full cursor-pointer">
                                 Shop Now
                             </button>
                         </div>
@@ -57,7 +57,7 @@ export default function Deals() {
 
 
                         <div className="flex justify-start">
-                            <button className="bg-secondary text-sm text-tertiary font-bold px-5 py-2 rounded-full">
+                            <button className="bg-secondary text-sm text-tertiary font-bold px-5 py-2 rounded-full cursor-pointer">
                                 Shop Now
                             </button>
                         </div>

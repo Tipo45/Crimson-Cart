@@ -1,10 +1,13 @@
 "use client"
 
+import FloatingCart from "@/components/Floatingcart";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import Newsletter from "@/components/Newsletter";
 import ProductCard from "@/components/Productscard";
 import SkeletonCard from "@/components/skeletonui/ProductsSkeletonCard";
+import { api } from "@/convex/_generated/api";
+import { useQuery } from "convex/react";
 import { useState, useEffect } from "react";
 import {
     FaArrowLeft,
@@ -14,96 +17,48 @@ import {
 // import Image from "next/image";
 
 type CategoryListProps = {
-    activeCategory: string
-    setActiveCategory: (category: string) => void
-}
+    categories: {
+        name: string;
+    }[];
+    activeCategory: string;
+    setActiveCategory: (category: string) => void;
+};
 
-const categories = [
-    { name: "All Products", count: 10 },
-    { name: "Electronics", count: 3 },
-    { name: "Fashion", count: 2 },
-    { name: "Home & Living", count: 2 },
-    { name: "Sports & Fitness", count: 2 },
-    { name: "Beauty & Health", count: 1 },
-];
-
-const products = [
-    {
-        id: 1,
-        badge: "Trending",
-        brand: "STRIDEFIT",
-        title: "Running Shoes — Ultra Boost",
-        rating: 4.7,
-        reviews: 2100,
-        price: 189.99,
-        image: "../../public/images/beans.jpg",
-        hoverImage: "../../public/images/carrots.jpg",
-    },
-    {
-        id: 2,
-        badge: "Best Seller",
-        brand: "AUDIOTECH PRO",
-        title: "Wireless Noise-Cancelling Headphones",
-        rating: 4.8,
-        reviews: 1240,
-        price: 249.99,
-        oldPrice: 349.99,
-        image: "/headphone1.png",
-        hoverImage: "/headphone2.png",
-    },
-    {
-        id: 3,
-        badge: "Best Seller",
-        brand: "AUDIOTECH PRO",
-        title: "Wireless Noise-Cancelling Headphones",
-        rating: 4.8,
-        reviews: 1240,
-        price: 249.99,
-        oldPrice: 349.99,
-        image: "/headphone1.png",
-        hoverImage: "/headphone2.png",
-    },
-    {
-        id: 4,
-        badge: "Best Seller",
-        brand: "AUDIOTECH PRO",
-        title: "Wireless Noise-Cancelling Headphones",
-        rating: 4.8,
-        reviews: 1240,
-        price: 249.99,
-        oldPrice: 349.99,
-        image: "/headphone1.png",
-        hoverImage: "/headphone2.png",
-    },
-    {
-        id: 5,
-        badge: "Best Seller",
-        brand: "AUDIOTECH PRO",
-        title: "Wireless Noise-Cancelling Headphones",
-        rating: 4.8,
-        reviews: 1240,
-        price: 249.99,
-        oldPrice: 349.99,
-        image: "/headphone1.png",
-        hoverImage: "/headphone2.png",
-    },
-];
-
-export default function ProductsPage() {
+export default function productsPage({ }) {
     const [activeCategory, setActiveCategory] = useState("All Products");
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [loading, setLoading] = useState(true);
+    const categories = useQuery(api.user.getCategories);
+    const allproducts = useQuery(api.user.getProducts);
+    const categoryProducts = useQuery(api.user.getProductsByCategory, activeCategory === "All Products"
+        ? "skip"
+        : { category: activeCategory });
+
+    const products = activeCategory === "All Products"
+        ? allproducts
+        : categoryProducts;
+
 
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), 1500);
         return () => clearTimeout(timer);
     }, []);
 
+    if (products == undefined) {
+        return (
+            <section className="container mx-auto px-6 py-12">
+                <div className="flex justify-center items-center h-64">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                </div>
+            </section>
+        );
+    }
+
     return (
         <>
-            <Navbar />
-            <div className="min-h-screen bg-primary pt-20">
 
+            <div className="min-h-screen bg-primary pt-20 z-20">
+                <Navbar />
                 {/* ===== Top Bar ===== */}
                 <div className="border-b border-divider px-6 py-4 flex items-center gap-4">
                     <button className="flex items-center gap-2 text-secondary-text">
@@ -118,7 +73,7 @@ export default function ProductsPage() {
                     {/* Mobile Filter Button */}
                     <button
                         onClick={() => setDrawerOpen(true)}
-                        className="tablet:hidden bg-secondary-button border border-border p-2 rounded-lg"
+                        className="lg:hidden bg-secondary-button border border-border p-2 rounded-lg"
                     >
                         <FaFilter />
                     </button>
@@ -129,6 +84,7 @@ export default function ProductsPage() {
                     {/* ===== Desktop Sidebar ===== */}
                     <aside className="hidden tablet:block w-56 lg:w-64 border-r border-divider bg-tertiary p-6">
                         <CategoryList
+                            categories={(categories ?? []).map(cat => ({ name: cat }))}
                             activeCategory={activeCategory}
                             setActiveCategory={setActiveCategory}
                         />
@@ -146,6 +102,7 @@ export default function ProductsPage() {
                                 </div>
 
                                 <CategoryList
+                                    categories={(categories ?? []).map(cat => ({ name: cat }))}
                                     activeCategory={activeCategory}
                                     setActiveCategory={(cat) => {
                                         setActiveCategory(cat);
@@ -174,40 +131,61 @@ export default function ProductsPage() {
 ">
                             {loading
                                 ? [...Array(6)].map((_, i) => <SkeletonCard key={i} />)
-                                : products.map((product) => (
-                                    <ProductCard key={product.id} product={product} />
+                                : (products ?? []).map((product, index) => (
+                                    <ProductCard
+                                        key={product._id}
+                                        product={product}
+                                        index={index}
+                                    />
                                 ))}
                         </div>
                     </main>
                 </div>
-                <Footer />
+
             </div>
+            <FloatingCart />
+            <Footer />
         </>
     );
 }
 
 
 function CategoryList({
+    categories,
     activeCategory,
-    setActiveCategory,
+    setActiveCategory
 }: CategoryListProps) {
     return (
         <div className="space-y-2">
+
+            <button
+
+                onClick={() => setActiveCategory("All Products")}
+                className={`w-full flex justify-between px-4 py-2 rounded-lg text-sm transition
+            ${activeCategory === "All Products"
+                        ? "bg-accent-background text-accent-text"
+                        : "text-secondary-text hover:bg-secondary-button"
+                    }
+          `}
+            >
+                <span>All Products</span>
+            </button>
+
             {categories.map((cat) => (
                 <button
                     key={cat.name}
                     onClick={() => setActiveCategory(cat.name)}
                     className={`w-full flex justify-between px-4 py-2 rounded-lg text-sm transition
-            ${activeCategory === cat.name
+        ${activeCategory === cat.name
                             ? "bg-accent-background text-accent-text"
                             : "text-secondary-text hover:bg-secondary-button"
                         }
-          `}
+      `}
                 >
-                    <span>{cat.name}</span>
-                    <span className="text-xs">{cat.count}</span>
+                    <span className="capitalize">{cat.name}</span>
                 </button>
             ))}
+
         </div>
     );
 }

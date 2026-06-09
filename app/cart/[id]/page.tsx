@@ -34,7 +34,6 @@ export default function Cart() {
 
   // ================= STORE USER =================
   const storeUser = useMutation(api.user.store);
-  // const cartItems = useQuery(api.user.getCart);
   const cartItems = useQuery(api.user.getCart) as CartItem[] | null | undefined;
   const removeFromCart = useMutation(api.user.removeFromCart);
   const updateCartQuantity = useMutation(api.user.updateCartQuantity);
@@ -61,14 +60,6 @@ export default function Cart() {
 
   if (!cartItems) return <div>Failed to load cart.</div>;
 
-  // const validCartItems = cartItems.filter((item): item is CartItem => {
-  //   return item !== null &&
-  //     typeof item === 'object' &&
-  //     'price' in item &&
-  //     'quantity' in item &&
-  //     'name' in item;
-  // });
-
   const removeItem = async (item: CartItem) => {
     try {
       await removeFromCart({ cartItemId: item._id });
@@ -79,11 +70,13 @@ export default function Cart() {
   };
 
   const increaseQty = async (item: CartItem) => {
+    console.log("Increasing quantity for item:", item);
     try {
       await updateCartQuantity({
         cartItemId: item._id,
         quantity: item.quantity + 1,
       });
+
       toast.success("Quantity updated");
     } catch (error) {
       toast.error("Failed to update quantity");
@@ -172,7 +165,7 @@ export default function Cart() {
                       {/* Quantity Controls */}
                       <div className="flex items-center border rounded-lg overflow-hidden">
                         <button
-                          // onClick={() => decreaseQty(item.id)}
+                          onClick={() => decreaseQty(item)}
                           disabled={item.quantity === 1}
                           className={`px-3 py-1 font-bold transition ${item.quantity === 1
                               ? "text-gray-400 cursor-not-allowed"
@@ -187,7 +180,7 @@ export default function Cart() {
                         </span>
 
                         <button
-                          // onClick={() => increaseQty(item.id)}
+                          onClick={() => increaseQty(item)}
                           className="px-3 py-1 text-secondary font-bold hover:bg-primary transition"
                         >
                           +
