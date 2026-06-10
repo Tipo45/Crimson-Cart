@@ -93,14 +93,43 @@ export const addPhoneNumber = mutation({
 });
 
 // add to wishlist
-export const addToWishlist = mutation({
+// export const addToWishlist = mutation({
+//   args: {
+//     productId: v.id("products"),
+//   },
+//   handler: async (ctx, args) => {
+//     const identity = await ctx.auth.getUserIdentity();
+//     if (!identity) {
+//       throw new Error("Not authenticated");
+//     }
+
+//     const user = await ctx.db
+//       .query("users")
+//       .withIndex("by_token", (q) =>
+//         q.eq("tokenIdentifier", identity.tokenIdentifier)
+//       )
+//       .unique();
+
+//     if (!user) {
+//       throw new Error("User not found");
+//     }
+
+//     return await ctx.db.insert("wishlist", {
+//       userId: user._id,
+//       productId: args.productId,
+//     });
+//   },
+// });
+
+export const toggleWishlist = mutation({
   args: {
     productId: v.id("products"),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
+
     if (!identity) {
-      throw new Error("Not authenticated");
+      throw new Error("Unauthorized");
     }
 
     const user = await ctx.db
@@ -114,10 +143,29 @@ export const addToWishlist = mutation({
       throw new Error("User not found");
     }
 
-    return await ctx.db.insert("wishlist", {
+    const existing = await ctx.db
+      .query("wishlist")
+      .withIndex("by_user_product", (q) =>
+        q.eq("userId", user._id).eq("productId", args.productId)
+      )
+      .unique();
+
+    if (existing) {
+      await ctx.db.delete(existing._id);
+
+      return {
+        action: "removed",
+      };
+    }
+
+    await ctx.db.insert("wishlist", {
       userId: user._id,
       productId: args.productId,
     });
+
+    return {
+      action: "added",
+    };
   },
 });
 
@@ -142,15 +190,50 @@ export const getWishlist = query({
       return [];
     }
 
-    const wishListItems = await ctx.db
+    const wishlistItems = await ctx.db
       .query("wishlist")
       .withIndex("by_user", (q) =>
         q.eq("userId", user._id)
       )
       .collect();
 
-      return wishListItems;
-},
+      return await Promise.all(
+      wishlistItems.map(async (item) => {
+        const product = await ctx.db.get(item.productId);
+
+        return {
+          ...item,
+          product,
+        };
+      })
+    );
+  },
+});
+
+// get Wishlist ids
+export const getWishlistProductIds = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) return [];
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+
+    if (!user) return [];
+
+    const wishlistItems = await ctx.db
+      .query("wishlist")
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .collect();
+
+    return wishlistItems.map((item) => item.productId);
+  },
 });
 
 // add to cart

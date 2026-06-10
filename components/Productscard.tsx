@@ -29,19 +29,24 @@ type Product = {
 type ProductCardProps = {
   product: Product;
   index: number;
+  isWishlisted: boolean;
 };
 
-export default function ProductCard({ product, index }: ProductCardProps) {
-  const [liked, setLiked] = useState(false);
+export default function ProductCard({ product, index, isWishlisted }: ProductCardProps) {
+  
   const { isSignedIn } = useUser();
   const router = useRouter();
   const [quantities, setQuantities] = React.useState<Record<number, number>>({});
-  const [loadingProduct, setLoadingProduct] =
-    React.useState<Id<"products"> | null>(null);
+  const [cartLoading, setCartLoading] =
+  useState<Id<"products"> | null>(null);
+
+const [wishlistLoading, setWishlistLoading] =
+  useState<Id<"products"> | null>(null);
   const addToCart = useMutation(api.user.addToCart);
-  const addToWishlist = useMutation(api.user.addToWishlist);
+  const toggleWishlist = useMutation(api.user.toggleWishlist);
   const [ripples, setRipples] = React.useState<Record<number, number>>({});
 
+  
 
   const triggerRipple = (index: number) => {
     setRipples((prev) => ({
@@ -50,7 +55,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
     }));
   };
 
-  const toWishList = async (productId: Id<"products">) => {
+  const handleWishList = async (productId: Id<"products">) => {
     if (!isSignedIn) {
       // User is not signed in, show toast and redirect to sign in  
       toast.error("Please sign in to add items to your wishlist");
@@ -61,22 +66,23 @@ export default function ProductCard({ product, index }: ProductCardProps) {
     }
 
     try {
-      setLoadingProduct(productId);
-
-      await addToWishlist({
+      setWishlistLoading(productId);
+      
+      const result = await toggleWishlist({
         productId,
       });
 
+
       toast.success(
-      liked
-        ? "Removed from wishlist"
-        : "Added to wishlist"
+      result.action === "added"
+        ? "Added to wishlist"
+        : "Removed from wishlist"
     );
     } catch (error) {
       console.error(error);
-      toast.error("Failed to add item to wishlist");
+      toast.error("Wishlist update failed");
     } finally {
-      setLoadingProduct(null);
+      setWishlistLoading(null);
     }
   };
 
@@ -95,7 +101,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
     }
 
     try {
-      setLoadingProduct(productId);
+      setCartLoading(productId);
 
       await addToCart({
         productId,
@@ -107,7 +113,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
       console.error(error);
       toast.error("Failed to add item to cart");
     } finally {
-      setLoadingProduct(null);
+      setCartLoading(null);
     }
   };
 
@@ -144,7 +150,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
             )}
           </div>
           <span className="text-secondary-text">
-            ({product.reviewCount ?? 0} review(s))
+            {product.reviewCount ?? 0} review{(product.reviewCount ?? 0) !== 1 && "s"}
           </span>
         </div>
 
@@ -158,7 +164,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
         {/* Actions */}
         <div className="flex gap-2 pt-2">
           <motion.button
-            disabled={loadingProduct === product._id}
+            disabled={cartLoading === product._id}
             whileHover={{ y: -2, scale: 1.03 }}
             whileTap={{ scale: 0.95 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -177,7 +183,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
               );
             }}
           >
-            {loadingProduct === product._id
+            {cartLoading === product._id
               ? <><FaShoppingCart /> Adding...</>
               :
               "Add to Cart"
@@ -194,20 +200,18 @@ export default function ProductCard({ product, index }: ProductCardProps) {
           </motion.button>
           
           
-           {liked ? (<button
-            // onClick={() => toWishList(product._id)}
-            className="w-10 h-10 border border-border rounded-lg flex items-center justify-center cursor-pointer"
-          >
-            <FaHeart className="text-yellow-400" />  
-          </button>)
-:
-          (<button
-            onClick={() => toWishList(product._id)}
-            className="w-10 h-10 border border-border rounded-lg flex items-center justify-center cursor-pointer"
-          >
-            <FaRegHeart />
-          </button>)
-          }
+           <button
+  onClick={() => handleWishList(product._id)}
+  disabled={wishlistLoading === product._id}
+  className="w-10 h-10 border border-border rounded-lg flex items-center justify-center disabled:opacity-50 cursor-pointer
+    disabled:cursor-not-allowed"
+>
+  {isWishlisted ? (
+    <FaHeart className="text-yellow-400" />
+  ) : (
+    <FaRegHeart />
+  )}
+</button>
         </div>
       </div>
         </div>

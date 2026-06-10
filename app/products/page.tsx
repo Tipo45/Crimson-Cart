@@ -8,6 +8,7 @@ import ProductCard from "@/components/Productscard";
 import SkeletonCard from "@/components/skeletonui/ProductsSkeletonCard";
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import {
     FaArrowLeft,
@@ -37,7 +38,17 @@ export default function productsPage({ }) {
     const products = activeCategory === "All Products"
         ? allproducts
         : categoryProducts;
+        // const wishlistProductIds = useQuery(api.user.getWishlistProductIds) ?? [];
+        const wishlist = useQuery(api.user.getWishlist) ?? [];
 
+        const wishlistIds = new Set(
+    wishlist.map((item) => item.productId)
+  );
+
+        const router = useRouter();
+        const handleBack = () => {
+            router.back();
+        }
 
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), 1500);
@@ -61,7 +72,7 @@ export default function productsPage({ }) {
                 <Navbar />
                 {/* ===== Top Bar ===== */}
                 <div className="border-b border-divider px-6 py-4 flex items-center gap-4">
-                    <button className="flex items-center gap-2 text-secondary-text">
+                    <button onClick={handleBack} className="flex items-center gap-2 text-secondary-text cursor-pointer">
                         <FaArrowLeft /> Back
                     </button>
 
@@ -136,6 +147,7 @@ export default function productsPage({ }) {
                                         key={product._id}
                                         product={product}
                                         index={index}
+                                        isWishlisted={wishlistIds.has(product._id)}
                                     />
                                 ))}
                         </div>

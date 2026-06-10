@@ -7,17 +7,22 @@ import { motion } from "framer-motion";
 import Providers from "@/app/providers";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 
-type wishList = {
-    _id: string;
+type Product = {
+    _id: Id<"products">;
     name: string;
     price: number;
-    image: string;  
+    // image: string;  
 }
 
 type WishlistItem = {
-_id: string;
+  _id: Id<"wishlist">;
+  productId: Id<"products">;
+  product: Product | null;
 };
+
+
 
 export default function Wishlist() {
     const [loading, setLoading] = useState(true);
@@ -27,12 +32,12 @@ export default function Wishlist() {
         return () => clearTimeout(timer);
     }, []);
 
-    const wishlistItems: WishlistItem[] = useQuery(api.user.getWishlist) || [];
+    const wishListItems = useQuery(api.user.getWishlist);
 
     return (
         <>
             {/* Wishlist */}
-            {loading ? [...Array(4)].map((_, i) => <WishlistSkeleton key={i} />) : (<Providers>
+            {loading ? [...Array(4)].map((_, i) => <WishlistSkeleton key={i} />) : (
                 <div>
                     <h2 className="text-xl font-semibold mb-6 text-primart-text">
                         My Wishlist
@@ -49,11 +54,11 @@ export default function Wishlist() {
                                 },
                             },
                         }} className="grid grid-cols-2 tablet:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {wishlistItems.map((item) => (
+                        {wishListItems?.map((item) => (
                             <WishlistCard key={item._id} item={item} />
                         ))}
                     </motion.div>
-                </div></Providers>)}
+                </div>)}
         </>
     )
 }
@@ -75,20 +80,19 @@ function WishlistCard({ item }: WishlistCardProps) {
             <div className="relative w-full h-40 bg-muted-section">
                 {/* <Image
                     src={item.image}
-                    alt={item.name}
+                    alt={item.product?.name}
                     fill
                     className="object-cover"
                 /> */}
             </div>
 
             <div className="p-4 space-y-3">
-                <h3 className="text-sm font-medium text-primart-text line-clamp-2">
-                    {item._id}
-                    {/* {item.name} */}
+                <h3 className="text-sm font-medium text-primart-text line-clamp-2 capitalize">
+                    {item.product?.name}
                 </h3>
 
                 <p className="text-secondary font-semibold">
-                    {/* {item.price} */}
+                   ₦ {item.product?.price.toLocaleString()}
                 </p>
 
                 <div className="flex gap-2 pt-2">

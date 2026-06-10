@@ -9,9 +9,13 @@ export default defineSchema({
         phoneNumber: v.optional(v.string()),
     }).index("by_token", ["tokenIdentifier"]),
 
-    // vendors: defineTable({
-    //     businessName: v.string(),
-    // }),
+    settings: defineTable({
+        userId: v.id("users"),
+        emailNotifications: v.boolean(),
+        pushNotifications: v.boolean(),
+        smsNotifications: v.boolean(),
+    }).index("by_user", ["userId"]
+    ),
 
     products: defineTable({
         userId: v.id("users"),
@@ -20,7 +24,6 @@ export default defineSchema({
         price: v.number(),
         quantity: v.number(),
         imageId: v.optional(v.id("_storage")),
-        // vendor: v.id("vendors"),
     })
         .index("by_category", ["category"])
         .index("by_user", ["userId"]),
@@ -45,5 +48,6 @@ export default defineSchema({
     wishlist: defineTable({
         userId: v.id("users"),
         productId: v.id("products"),
-    }).index("by_user", ["userId"]),
+    }).index("by_user", ["userId"])
+    .index("by_user_product", ["userId", "productId"]),
 });

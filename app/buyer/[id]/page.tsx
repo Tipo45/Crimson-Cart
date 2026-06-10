@@ -12,6 +12,7 @@ import Settings from "@/components/buyer/Settings";
 import { useUser } from "@clerk/nextjs";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import FloatingCart from "@/components/Floatingcart";
 
 
 type TabItem = {
@@ -40,13 +41,19 @@ export default function BuyerAccountPage() {
     }
   }, [isSignedIn, storeUser]);
 
+  const cartItems = useQuery(api.user.getCart);
+  const hasCartItems = cartItems && cartItems.length > 0;
+
   // ================= QUERY USER =================
   // const currentUser = useQuery(api.user.getCurrentUser);
 
   const tabContent = {
-    orders: <Orders />,
-    wishlist: <Wishlist />,
-    address: <Address />,
+    orders: (<><Orders />
+      {hasCartItems && <FloatingCart />}</>),
+    wishlist: (<><Wishlist />
+      {hasCartItems && <FloatingCart />}</>),
+    address: (<><Address />
+      {hasCartItems && <FloatingCart />}</>),
     settings: <Settings />,
   };
 
@@ -77,7 +84,7 @@ export default function BuyerAccountPage() {
                 </p>
 
                 <div className="flex items-center gap-2 mt-2">
-                  <span className="rounded-full">
+                  <span className="rounded-full opacity-50">
                     <LuBadgeCheck size={25} className="text-green-500" />
                   </span>
                 </div>
