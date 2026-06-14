@@ -55,6 +55,8 @@ export default function Settings() {
         push: true,
     });
 
+    const settings = useQuery(api.user.getSettings)
+
     const [cards, setCards] = useState<Card[]>([
         { id: 1, brand: "Visa", last4: "4242", expiry: "12/27" },
         { id: 2, brand: "Mastercard", last4: "8891", expiry: "09/26" },
@@ -262,7 +264,7 @@ export default function Settings() {
                     >
                         <SignOutButton redirectUrl="/?logout=success">
                             <button
-                                className="w-14 h-14 bg-error text-white rounded-full shadow-lg flex items-center justify-center hover:bg-error/90 transition"
+                                className="w-14 h-14 bg-error text-white rounded-full shadow-lg flex items-center justify-center hover:bg-error/90 transition cursor-pointer"
                             >
                                 <FaSignOutAlt size={20} />
                             </button>

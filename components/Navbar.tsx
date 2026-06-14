@@ -10,7 +10,7 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import { Authenticated, Unauthenticated, useQuery } from "convex/react";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 import { api } from "@/convex/_generated/api";
 import { useRouter } from "next/navigation";
 
@@ -61,7 +61,7 @@ export default function Navbar() {
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Products", href: "/products" },
-    { name: "Categories", href: "/categories" },
+    { name: "Categories", href: "/#categories" },
     { name: "Brands", href: "/brands" },
     { name: "Contact", href: "#footer" },
   ];

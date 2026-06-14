@@ -8,7 +8,7 @@ import ProductCard from "@/components/Productscard";
 import SkeletonCard from "@/components/skeletonui/ProductsSkeletonCard";
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import {
     FaArrowLeft,
@@ -25,10 +25,12 @@ type CategoryListProps = {
     setActiveCategory: (category: string) => void;
 };
 
-export default function productsPage({ }) {
+export default function productsPage() {
+    // const [activeCategory, setActiveCategory] = useState("All Products");
     const [activeCategory, setActiveCategory] = useState("All Products");
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState("");
     const categories = useQuery(api.user.getCategories);
     const allproducts = useQuery(api.user.getProducts);
     const categoryProducts = useQuery(api.user.getProductsByCategory, activeCategory === "All Products"
@@ -38,17 +40,33 @@ export default function productsPage({ }) {
     const products = activeCategory === "All Products"
         ? allproducts
         : categoryProducts;
-        // const wishlistProductIds = useQuery(api.user.getWishlistProductIds) ?? [];
-        const wishlist = useQuery(api.user.getWishlist) ?? [];
+    const filteredProducts = (products ?? []).filter(
+        (product) =>
+            product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            product.category.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    const wishlist = useQuery(api.user.getWishlist) ?? [];
 
-        const wishlistIds = new Set(
-    wishlist.map((item) => item.productId)
-  );
+    const wishlistIds = new Set(
+        wishlist.map((item) => item.productId)
+    );
 
-        const router = useRouter();
-        const handleBack = () => {
-            router.back();
-        }
+    const searchParams = useSearchParams();
+const categoryFromUrl = searchParams.get("category");
+
+
+
+
+    const router = useRouter();
+    const handleBack = () => {
+        router.back();
+    }
+
+    useEffect(() => {
+  if (categoryFromUrl) {
+    setActiveCategory(categoryFromUrl);
+  }
+}, [categoryFromUrl]);
 
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), 1500);
@@ -77,6 +95,9 @@ export default function productsPage({ }) {
                     </button>
 
                     <input
+                        type="text"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                         placeholder="Search products..."
                         className="flex-1 border border-input-border rounded-lg px-4 py-2 bg-tertiary focus:outline-none focus:ring-2 focus:ring-secondary w-30"
                     />
@@ -84,7 +105,7 @@ export default function productsPage({ }) {
                     {/* Mobile Filter Button */}
                     <button
                         onClick={() => setDrawerOpen(true)}
-                        className="lg:hidden bg-secondary-button border border-border p-2 rounded-lg"
+                        className="xl:hidden bg-secondary-button border border-border p-2 rounded-lg"
                     >
                         <FaFilter />
                     </button>
@@ -93,7 +114,7 @@ export default function productsPage({ }) {
                 <div className="flex flex-col tablet:flex-row">
 
                     {/* ===== Desktop Sidebar ===== */}
-                    <aside className="hidden tablet:block w-56 lg:w-64 border-r border-divider bg-tertiary p-6">
+                    <aside className="hidden xl:block w-56 lg:w-64 border-r border-divider bg-tertiary p-6">
                         <CategoryList
                             categories={(categories ?? []).map(cat => ({ name: cat }))}
                             activeCategory={activeCategory}
@@ -140,16 +161,22 @@ export default function productsPage({ }) {
   xl:grid-cols-6 
   gap-4
 ">
-                            {loading
-                                ? [...Array(6)].map((_, i) => <SkeletonCard key={i} />)
-                                : (products ?? []).map((product, index) => (
+                            {loading ? (
+                                [...Array(6)].map((_, i) => <SkeletonCard key={i} />)
+                            ) : filteredProducts.length > 0 ? (
+                                filteredProducts.map((product, index) => (
                                     <ProductCard
                                         key={product._id}
                                         product={product}
                                         index={index}
                                         isWishlisted={wishlistIds.has(product._id)}
                                     />
-                                ))}
+                                ))
+                            ) : (
+                                <div className="col-span-full text-center py-10 text-secondary-text">
+                                    No products found.
+                                </div>
+                            )}
                         </div>
                     </main>
                 </div>

@@ -137,7 +137,7 @@ export default function Address() {
                         ))}
 
                         {/* Add New Address Card */}
-                        <button
+                        {/* <button
                             onClick={() => setShowForm(!showForm)}
                             className="flex flex-col items-center justify-center gap-3 border-2 border-dashed border-input-border rounded-xl p-6 bg-tertiary hover:bg-secondary-button transition text-secondary-text"
                         >
@@ -145,7 +145,7 @@ export default function Address() {
                                 <IoAdd size={20} className="text-secondary-button-text" />
                             </div>
                             <span className="text-sm font-medium">Add New Address</span>
-                        </button>
+                        </button> */}
                     </motion.div>
                     {showForm && (
                         <motion.div

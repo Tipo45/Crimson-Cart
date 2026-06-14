@@ -11,11 +11,17 @@ export default defineSchema({
 
     settings: defineTable({
         userId: v.id("users"),
-        emailNotifications: v.boolean(),
-        pushNotifications: v.boolean(),
-        smsNotifications: v.boolean(),
-    }).index("by_user", ["userId"]
-    ),
+        emailNotifications: v.optional(v.boolean()),
+        pushNotifications: v.optional(v.boolean()),
+        smsNotifications: v.optional(v.boolean()),
+    }).index("by_user", ["userId"]),
+
+    address: defineTable({
+        userId: v.id("users"),
+        address1: v.string(),
+        address2: v.optional(v.string()),
+        address3: v.optional(v.string()),
+    }).index("by_user", ["userId"]),
 
     products: defineTable({
         userId: v.id("users"),
@@ -24,8 +30,7 @@ export default defineSchema({
         price: v.number(),
         quantity: v.number(),
         imageId: v.optional(v.id("_storage")),
-    })
-        .index("by_category", ["category"])
+    }).index("by_category", ["category"])
         .index("by_user", ["userId"]),
 
     reviews: defineTable({

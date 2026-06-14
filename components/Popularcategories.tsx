@@ -1,11 +1,13 @@
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
+import { useRouter } from "next/navigation";
 
 export default function Popularcategories() {
   const categories = useQuery(api.user.getCategories) ?? [];
+  const router = useRouter();
 
   return (
-    <section className="container mx-auto py-12">
+    <section id="categories" className="container mx-auto py-12">
       <h1 className="text-xl tablet:text-2xl font-bold text-secondary mb-6">
         Popular Categories
       </h1>
@@ -21,6 +23,9 @@ export default function Popularcategories() {
         {categories.map((category, index) => (
           <div
             key={index}
+            onClick={() =>
+              router.push(`/products?category=${encodeURIComponent(category)}`)
+            }
             className="
               p-10 
               text-center 

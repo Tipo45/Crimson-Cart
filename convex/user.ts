@@ -30,6 +30,40 @@ export const store = mutation({
   }
 });
 
+// update settings
+
+// get settings 
+export const getSettings = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      return [];
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+
+    if (!user) {
+      return [];
+    }
+
+    const userSettings = await ctx.db
+      .query("settings")
+      .withIndex("by_user", (q) =>
+        q.eq("userId", user._id)
+      )
+      .collect();
+
+      return userSettings.map((item) => item._id);
+  }
+});
+
 // update address
 export const addAddress = mutation({
   args: {
@@ -93,34 +127,6 @@ export const addPhoneNumber = mutation({
 });
 
 // add to wishlist
-// export const addToWishlist = mutation({
-//   args: {
-//     productId: v.id("products"),
-//   },
-//   handler: async (ctx, args) => {
-//     const identity = await ctx.auth.getUserIdentity();
-//     if (!identity) {
-//       throw new Error("Not authenticated");
-//     }
-
-//     const user = await ctx.db
-//       .query("users")
-//       .withIndex("by_token", (q) =>
-//         q.eq("tokenIdentifier", identity.tokenIdentifier)
-//       )
-//       .unique();
-
-//     if (!user) {
-//       throw new Error("User not found");
-//     }
-
-//     return await ctx.db.insert("wishlist", {
-//       userId: user._id,
-//       productId: args.productId,
-//     });
-//   },
-// });
-
 export const toggleWishlist = mutation({
   args: {
     productId: v.id("products"),
@@ -169,6 +175,25 @@ export const toggleWishlist = mutation({
   },
 });
 
+export const removeFromWishlist = mutation({
+  args: {
+    wishlistItemId: v.id("wishlist"),
+  },
+  handler: async (ctx, args) => {
+
+
+    const item = await ctx.db.get(args.wishlistItemId);
+
+    if (!item) {
+      throw new Error("Unauthorized");
+    }
+
+    await ctx.db.delete(args.wishlistItemId);
+
+    return true;
+  },
+});
+
 // get wishlist items
 export const getWishlist = query({
   args: {},
@@ -197,7 +222,7 @@ export const getWishlist = query({
       )
       .collect();
 
-      return await Promise.all(
+    return await Promise.all(
       wishlistItems.map(async (item) => {
         const product = await ctx.db.get(item.productId);
 
@@ -420,7 +445,7 @@ export const getProducts = query({
   handler: async (ctx) => {
     const products = await ctx.db.query("products").collect();
 
-     return await Promise.all(
+    return await Promise.all(
       products.map(async (product) => {
         const reviews = await ctx.db
           .query("reviews")
@@ -429,16 +454,16 @@ export const getProducts = query({
           )
           .collect();
 
-    const reviewCount = reviews.length;
+        const reviewCount = reviews.length;
 
         const averageRating =
           reviewCount > 0
             ? reviews.reduce(
-                (sum, review) => sum + (review.rating ?? 0),
-                0
-              ) / reviewCount
+              (sum, review) => sum + (review.rating ?? 0),
+              0
+            ) / reviewCount
             : 0;
-    return {
+        return {
           ...product,
           averageRating,
           reviewCount,
@@ -454,6 +479,7 @@ export const getProductById = query({
     productId: v.id("products"),
   },
   handler: async (ctx, args) => {
+    // if (!args.productId) return null;
     const product = await ctx.db.get(args.productId);
     return product;
   },
@@ -527,7 +553,7 @@ export const addReview = mutation({
       .query("reviews")
       .withIndex("by_product_and_user", (q) =>
         q.eq("productId", args.productId)
-         .eq("userId", user._id)
+          .eq("userId", user._id)
       )
       .unique();
 
@@ -565,9 +591,9 @@ export const getRatings = query({
           reviewCount === 0
             ? 0
             : reviews.reduce(
-                (sum, review) => sum + (review.rating ?? 0),
-                0
-              ) / reviewCount;
+              (sum, review) => sum + (review.rating ?? 0),
+              0
+            ) / reviewCount;
 
         return {
           ...product,
