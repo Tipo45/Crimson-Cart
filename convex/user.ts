@@ -31,6 +31,31 @@ export const store = mutation({
 });
 
 // update settings
+export const updateSettings = mutation({
+  args: {
+    emailNotification: v.optional(v.boolean()),
+    pushNotification: v.optional(v.boolean()),
+    smsNotification: v.optional(v.boolean()),
+  },
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+  }
+});
 
 // get settings 
 export const getSettings = query({
@@ -570,7 +595,51 @@ export const addReview = mutation({
   },
 });
 
-// query ratings and reviews for a product
+// query individual ratings and review
+export const getProductRatings = query({
+  args: {
+    productId: v.id("products"),
+  },
+  handler: async (ctx, args) => {
+    const reviews = await ctx.db
+      .query("reviews")
+      .withIndex("by_product", (q) =>
+        q.eq("productId", args.productId)
+      )
+      .collect();
+
+      const reviewsWithUsers = await Promise.all(
+  reviews.map(async (review) => {
+    const user = await ctx.db.get(review.userId);
+
+    return {
+      ...review,
+      userName: user?.email,
+    };
+  })
+);
+
+    const reviewCount = reviews.length;
+
+    const averageRating =
+      reviewCount === 0
+        ? 0
+        : reviews.reduce(
+            (sum, review) => sum + (review.rating ?? 0),
+            0
+          ) / reviewCount;
+
+    return {
+      averageRating: Number(
+        averageRating.toFixed(1)
+      ),
+      reviewCount,
+      reviews: reviewsWithUsers,
+    };
+  },
+});
+
+// query all ratings and reviews for a product
 export const getRatings = query({
   args: {},
   handler: async (ctx) => {

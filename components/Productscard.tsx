@@ -63,7 +63,6 @@ export default function ProductCard({ product, index, isWishlisted }: ProductCar
   const isInCart = !!cartItem;
   const cartQuantity = cartItem?.quantity || 0;
   const updateCartQuantity = useMutation(api.user.updateCartQuantity);
-  const removeFromCart = useMutation(api.user.removeFromCart);
 
   const handleProductClick = (e: React.MouseEvent) => {
     // Prevent navigation if clicking on buttons
@@ -241,7 +240,7 @@ export default function ProductCard({ product, index, isWishlisted }: ProductCar
             </span>
             <button
               onClick={handleIncreaseQty}
-              className="pl-1 pr-2 py-1 text-xs font-bold hover:bg-gray-100 transition"
+              className="pl-1 pr-2 py-1 text-xs text-secondary font-bold hover:bg-gray-100 transition"
             >
               +
             </button>
