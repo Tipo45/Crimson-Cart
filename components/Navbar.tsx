@@ -21,10 +21,10 @@ export default function Navbar() {
   const currentUser = useQuery(api.user.getCurrentUser);
   const router= useRouter();
 
-  const goToBuyerPage = () => {
+  const goToUserPage = () => {
   if (!currentUser) return;
 
-  router.push(`/buyer/${currentUser._id}`);
+  router.push(`/user/${currentUser._id}`);
 };
 
   // ESC to close
@@ -128,7 +128,7 @@ export default function Navbar() {
 
                   <Authenticated>
                     <div className="flex flex-col items-center gap-4">
-                      <button onClick={goToBuyerPage}>
+                      <button onClick={goToUserPage}>
                         <FaRegUserCircle size={40} className="text-primary cursor-pointer" />
                       </button>
                       {/* <UserButton /> */}
@@ -180,7 +180,7 @@ export default function Navbar() {
           </Unauthenticated>
 
           <Authenticated>
-            <button onClick={goToBuyerPage}>
+            <button onClick={goToUserPage}>
               <FaRegUserCircle size={25} className="text-secondary cursor-pointer" />
             </button>
             {/* <UserButton /> */}

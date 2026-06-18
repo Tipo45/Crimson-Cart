@@ -30,69 +30,13 @@ export const store = mutation({
   }
 });
 
-// update settings
-export const updateSettings = mutation({
-  args: {
-    emailNotification: v.optional(v.boolean()),
-    pushNotification: v.optional(v.boolean()),
-    smsNotification: v.optional(v.boolean()),
-  },
-  handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-
-    if (!identity) {
-      throw new Error("Not authenticated");
-    }
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier)
-      )
-      .unique();
-
-    if (!user) {
-      throw new Error("User not found");
-    }
-  }
-});
-
-// get settings 
-export const getSettings = query({
-  args: {},
-  handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-
-    if (!identity) {
-      return [];
-    }
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier)
-      )
-      .unique();
-
-    if (!user) {
-      return [];
-    }
-
-    const userSettings = await ctx.db
-      .query("settings")
-      .withIndex("by_user", (q) =>
-        q.eq("userId", user._id)
-      )
-      .collect();
-
-      return userSettings.map((item) => item._id);
-  }
-});
-
-// update address
+// add address
 export const addAddress = mutation({
   args: {
-    address: v.optional(v.string()),
+    street: v.string(),
+    city: v.string(),
+    state: v.string(),
+    country: v.string(),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -112,11 +56,253 @@ export const addAddress = mutation({
       throw new Error("User not found");
     }
 
-    await ctx.db.patch(user._id, {
-      address: args.address,
+    return await ctx.db.insert("address", {
+      userId: user._id,
+      street: args.street,
+      city: args.city,
+      state: args.state,
+      country: args.country,
+    });
+  },
+});
+
+// view address
+export const getAddresses = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      return [];
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+
+    if (!user) {
+      return [];
+    }
+
+    return await ctx.db
+      .query("address")
+      .withIndex("by_user", (q) =>
+        q.eq("userId", user._id)
+      )
+      .collect();
+  },
+});
+
+// update addresss
+export const updateAddress = mutation({
+  args: {
+    addressId: v.id("address"),
+    street: v.optional(v.string()),
+    city: v.optional(v.string()),
+    state: v.optional(v.string()),
+    country: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const existingAddress = await ctx.db.get(args.addressId);
+    if (!existingAddress) throw new Error("Address not found");
+
+   await ctx.db.patch(args.addressId, {
+      street: args.street,
+      city: args.city,
+      state: args.state,
+      country: args.country,
     });
 
-    return user._id;
+    return args.addressId;
+  },
+});
+
+// delete address
+export const deleteAddress = mutation({
+  args: {
+    addressId: v.id("address"),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.delete(args.addressId);
+  },
+});
+
+// update card
+export const addCard = mutation({
+  args: {
+    brand: v.string(),
+    name: v.string(),
+    number: v.string(),
+    expiry: v.string(),
+    cvv: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return await ctx.db.insert("cards", {
+      userId: user._id,
+      brand: args.brand,
+      name: args.name,
+      number: args.number,
+      expiry: args.expiry,
+      cvv: args.cvv,
+    });
+  },
+});
+
+// view card
+export const getCards = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      return [];
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+
+    if (!user) {
+      return [];
+    }
+
+    return await ctx.db
+      .query("cards")
+      .withIndex("by_user", (q) =>
+        q.eq("userId", user._id)
+      )
+      .collect();
+  },
+});
+
+// delete card
+export const deleteCard = mutation({
+  args: {
+    cardId: v.id("cards"),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.delete(args.cardId);
+  },
+});
+
+// update settings
+export const updateSettings = mutation({
+  args: {
+    emailNotifications: v.optional(v.boolean()),
+    pushNotifications: v.optional(v.boolean()),
+    smsNotifications: v.optional(v.boolean()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const existingSettings = await ctx.db
+      .query("notificationsettings")
+      .withIndex("by_user", (q) =>
+        q.eq("userId", user._id)
+      )
+      .unique();
+
+    if (existingSettings) {
+      await ctx.db.patch(existingSettings._id, {
+        emailNotifications: args.emailNotifications,
+        pushNotifications: args.pushNotifications,
+        smsNotifications: args.smsNotifications,
+      });
+
+      return existingSettings._id;
+    }
+
+    return await ctx.db.insert("notificationsettings", {
+      userId: user._id,
+      emailNotifications: args.emailNotifications ?? true,
+      pushNotifications: args.pushNotifications ?? true,
+      smsNotifications: args.smsNotifications ?? false,
+    });
+  },
+});
+
+// get settings 
+export const getSettings = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      return null;
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+
+    if (!user) {
+      return null;
+    }
+
+    return await ctx.db
+      .query("notificationsettings")
+      .withIndex("by_user", (q) =>
+        q.eq("userId", user._id)
+      )
+      .unique();
   },
 });
 
@@ -200,6 +386,7 @@ export const toggleWishlist = mutation({
   },
 });
 
+// remove from wishlist
 export const removeFromWishlist = mutation({
   args: {
     wishlistItemId: v.id("wishlist"),
@@ -379,16 +566,6 @@ export const getCart = query({
   },
 });
 
-// display image from storage
-export const getImageUrl = query({
-  args: {
-    imageId: v.id("_storage"),
-  },
-  handler: async (ctx, args) => {
-    return await ctx.storage.getUrl(args.imageId);
-  },
-});
-
 // remove item from cart
 export const removeFromCart = mutation({
   args: {
@@ -498,6 +675,18 @@ export const getProducts = query({
   },
 });
 
+// add products
+
+// display image from storage
+export const getImageUrl = query({
+  args: {
+    imageId: v.id("_storage"),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.storage.getUrl(args.imageId);
+  },
+});
+
 // get a single product by ID
 export const getProductById = query({
   args: {
@@ -536,7 +725,6 @@ export const getProductsByCategory = query({
     return products;
   },
 });
-
 
 // add ratings and reviews
 export const addReview = mutation({
@@ -608,16 +796,16 @@ export const getProductRatings = query({
       )
       .collect();
 
-      const reviewsWithUsers = await Promise.all(
-  reviews.map(async (review) => {
-    const user = await ctx.db.get(review.userId);
+    const reviewsWithUsers = await Promise.all(
+      reviews.map(async (review) => {
+        const user = await ctx.db.get(review.userId);
 
-    return {
-      ...review,
-      userName: user?.email,
-    };
-  })
-);
+        return {
+          ...review,
+          userName: user?.email,
+        };
+      })
+    );
 
     const reviewCount = reviews.length;
 
@@ -625,9 +813,9 @@ export const getProductRatings = query({
       reviewCount === 0
         ? 0
         : reviews.reduce(
-            (sum, review) => sum + (review.rating ?? 0),
-            0
-          ) / reviewCount;
+          (sum, review) => sum + (review.rating ?? 0),
+          0
+        ) / reviewCount;
 
     return {
       averageRating: Number(

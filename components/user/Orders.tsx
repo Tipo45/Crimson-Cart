@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { LuPackage } from "react-icons/lu";
 import { motion } from "framer-motion";
-import OrdersSkeleton from "../skeletonui/buyer/OrdersSkeleton";
+import OrdersSkeleton from "../skeletonui/user/OrdersSkeleton";
 
 
 export default function Orders() {

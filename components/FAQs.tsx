@@ -25,7 +25,7 @@ export default function FAQs() {
       value: "item-2",
       trigger: "Do I need an account to make a purchase?",
       content:
-        "Yes, you'll need to create a buyer account to complete purchases. This helps us track your orders and provide a personalized experience.",
+        "Yes, you'll need to create a user account to complete purchases. This helps us track your orders and provide a personalized experience.",
     },
     {
       value: "item-3",

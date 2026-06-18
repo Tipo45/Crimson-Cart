@@ -7,10 +7,10 @@ import { LuBadgeCheck } from "react-icons/lu";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import Navbar from "@/components/Navbar";
-import SellerDashboard from "@/components/seller/Dashboard";
-import Settings from "@/components/seller/Settings";
-import SellerProducts from "@/components/seller/Products";
-import SellerOrders from "@/components/seller/Orders";
+import SellerDashboard from "@/components/vendor/Dashboard";
+import Settings from "@/components/vendor/Settings";
+import SellerProducts from "@/components/vendor/Products";
+import SellerOrders from "@/components/vendor/Orders";
 
 export default function SellerDashboardPage() {
   const [activeTab, setActiveTab] = useState("dashboard");

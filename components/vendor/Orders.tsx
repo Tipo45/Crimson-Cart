@@ -155,7 +155,7 @@ export default function SellerOrders() {
                                                 </button>
 
                                                 <button className="px-4 py-2 rounded-lg border border-secondary-button-border bg-tertiary text-secondary-text hover:bg-muted-section transition">
-                                                    Contact Buyer
+                                                    Contact Customer
                                                 </button>
                                             </div>
 

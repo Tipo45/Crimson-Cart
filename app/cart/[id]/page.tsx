@@ -125,7 +125,7 @@ export default function Cart() {
               Looks like you haven't added anything yet.
             </p>
             <Link
-              href="/"
+              href="/products"
               className="bg-secondary text-white px-6 py-3 rounded-full font-semibold hover:opacity-90 transition"
             >
               Start Shopping

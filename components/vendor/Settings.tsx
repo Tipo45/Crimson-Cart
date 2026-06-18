@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { FaStore, FaMoneyBillWave, FaTruck, FaBell, FaLock } from "react-icons/fa";
-import SettingSkeleton from "../skeletonui/buyer/SettingsSkeleton";
+import SettingSkeleton from "../skeletonui/user/SettingsSkeleton";
 import Providers from "@/app/providers";
 
 export default function SellerSettings() {

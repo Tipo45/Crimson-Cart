@@ -11,7 +11,7 @@ const isPublicRoute = createRouteMatcher([
 
 
 const isProtectedRoute = createRouteMatcher([
-  '/buyer(.*)',
+  '/user(.*)',
   '/seller(.*)',
   '/cart(.*)',
   '/checkout(.*)'

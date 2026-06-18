@@ -5,10 +5,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import { LuBadgeCheck } from "react-icons/lu";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navbar from "@/components/Navbar";
-import Orders from "@/components/buyer/Orders";
-import Wishlist from "@/components/buyer/Wishlist";
-import Address from "@/components/buyer/Address";
-import Settings from "@/components/buyer/Settings";
+import Orders from "@/components/user/Orders";
+import Wishlist from "@/components/user/Wishlist";
+import Address from "@/components/user/Address";
+import Settings from "@/components/user/Settings";
 import { useUser } from "@clerk/nextjs";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -20,7 +20,7 @@ type TabItem = {
   label: string;
 };
 
-export default function BuyerAccountPage() {
+export default function UserAccountPage() {
   const tabs: TabItem[] = [
     { id: "orders", label: "Orders" },
     { id: "wishlist", label: "Wishlist" },
@@ -35,11 +35,11 @@ export default function BuyerAccountPage() {
   // ================= STORE USER =================
   const storeUser = useMutation(api.user.store);
 
-  useEffect(() => {
-    if (isSignedIn) {
-      storeUser();
-    }
-  }, [isSignedIn, storeUser]);
+  // useEffect(() => {
+  //   if (isSignedIn) {
+  //     storeUser();
+  //   }
+  // }, [isSignedIn, storeUser]);
 
   const cartItems = useQuery(api.user.getCart);
   const hasCartItems = cartItems && cartItems.length > 0;
@@ -80,14 +80,14 @@ export default function BuyerAccountPage() {
                 </p>
 
                 <p className="text-muted text-xs mt-1">
-                  {user?.updatedAt ? `Member since ${new Date(user.updatedAt).toLocaleDateString()}` : "New Member"}
+                  {user?.createdAt ? `Member since ${new Date(user.createdAt).toLocaleDateString()}` : "New Member"}
                 </p>
 
-                <div className="flex items-center gap-2 mt-2">
+                {/* <div className="flex items-center gap-2 mt-2">
                   <span className="rounded-full opacity-50">
                     <LuBadgeCheck size={25} className="text-green-500" />
                   </span>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -106,7 +106,7 @@ export default function BuyerAccountPage() {
                   >
                     {activeTab === tab.id && (
                       <motion.div
-                        layoutId="buyerActiveTab"
+                        layoutId="userActiveTab"
                         className="absolute inset-0 z-0 rounded-lg bg-secondary text-tertiary"
                         transition={{
                           type: "spring",

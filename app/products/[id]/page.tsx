@@ -232,13 +232,13 @@ export default function ProductDetails() {
                     )
                   )}
                 </div>
-                <span className="text-secondary-text ml-1">
+                {/* <span className="text-secondary-text ml-1">
                   {ratingsData?.averageRating ?? 0}
-                </span>
+                </span> */}
 
 
                 <span className="text-secondary-text">
-                  {/* {ratings.reviewCount ?? 0} review{(ratings.reviewCount ?? 0) !== 1 && "s"} */}
+                  {ratingsData?.reviewCount ?? 0} review{(ratingsData?.reviewCount ?? 0) !== 1 && "s"}
                 </span>
 
                 <span className="text-secondary-text">
@@ -335,12 +335,12 @@ export default function ProductDetails() {
               </motion.button>)}
 
 
-              <motion.button
+              <div className="py-5"><motion.button
                 onClick={() => handleWishList(product._id)}
                 disabled={wishlistLoading === product._id}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className=" p-4 rounded-xl border border-gray-300 dark:border-gray-700 hover:border-primary transition disabled:opacity-50 cursor-pointer
+                className="p-4 rounded-xl border border-gray-300 dark:border-gray-700 hover:border-primary transition disabled:opacity-50 cursor-pointer
           disabled:cursor-not-allowed"
               >
                 {isWishlisted ? (
@@ -348,7 +348,7 @@ export default function ProductDetails() {
                 ) : (
                   <FaHeart size={18} className="text-gray-500 hover:text-yellow-400" />
                 )}
-              </motion.button>
+              </motion.button></div>
             </div>
 
             <div className="border-t border-border pt-6 mt-8">

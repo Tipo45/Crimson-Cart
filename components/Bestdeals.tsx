@@ -20,6 +20,17 @@ import { toast } from "sonner";
 import { Id } from "@/convex/_generated/dataModel";
 import { useClerk, useUser } from "@clerk/nextjs";
 
+type CartItem = {
+  _id: Id<"cart">;
+  productId: Id<"products">;
+  name: string;
+  price: number;
+  quantity: number;
+  category: string;
+  imageId?: string;
+  imageUrl?: string;
+};
+
 export default function Bestdeals() {
 
   const { isSignedIn } = useUser();
@@ -28,31 +39,16 @@ export default function Bestdeals() {
   const [ripples, setRipples] = React.useState<Record<number, number>>({});
   const items = useQuery(api.user.getProducts);
   const addToCart = useMutation(api.user.addToCart);
+  const updateCartQuantity = useMutation(api.user.updateCartQuantity);
   const plugin = React.useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true })
   )
   const [loadingProduct, setLoadingProduct] =
     React.useState<Id<"products"> | null>(null);
 
-  if (items === undefined) {
-    return (
-      <section className="container mx-auto px-6 py-12">
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-        </div>
-      </section>
-    );
-  }
+  const cartItems =
+    useQuery(api.user.getCart) as CartItem[] | undefined;
 
-  if (!items || items.length === 0) {
-    return (
-      <section className="container mx-auto px-6 py-12">
-        <div className="text-center h-64 flex items-center justify-center">
-          <p className="text-gray-500">No products available at the moment.</p>
-        </div>
-      </section>
-    );
-  }
 
   const increaseQty = (index: number) => {
     setQuantities((prev) => ({
@@ -97,7 +93,7 @@ export default function Bestdeals() {
     productId: Id<"products">,
     quantity: number
   ) => {
-    
+
     if (!isSignedIn) {
       // User is not signed in, show toast and redirect to sign in
       toast.error("Please sign in to add items to your cart");
@@ -123,6 +119,64 @@ export default function Bestdeals() {
       setLoadingProduct(null);
     }
   };
+
+  const handleIncreaseQty = async (
+  cartItem: CartItem
+) => {
+      if (!cartItem) return;
+  
+      try {
+        await updateCartQuantity({
+          cartItemId: cartItem._id,
+          quantity: cartItem.quantity + 1,
+        });
+  
+        toast.success("Quantity updated");
+      } catch {
+        toast.error("Failed to update quantity");
+      }
+    };
+  
+    const handleDecreaseQty = async (
+  cartItem: CartItem
+) => {
+      if (!cartItem) return;
+  
+      if (cartItem.quantity <= 1) {
+        return;
+      }
+  
+      try {
+        await updateCartQuantity({
+          cartItemId: cartItem._id,
+          quantity: cartItem.quantity - 1,
+        });
+  
+        toast.success("Quantity updated");
+      } catch {
+        toast.error("Failed to update quantity");
+      }
+    };
+
+  if (items === undefined) {
+    return (
+      <section className="container mx-auto px-6 py-12">
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!items || items.length === 0) {
+    return (
+      <section className="container mx-auto px-6 py-12">
+        <div className="text-center h-64 flex items-center justify-center">
+          <p className="text-gray-500">No products available at the moment.</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="container mx-auto px-6 py-12">
@@ -152,7 +206,12 @@ export default function Bestdeals() {
           viewport={{ once: true }}>
           <CarouselContent className="-ml-4">
 
-            {items.map((item, index) => (
+            {items.map((item, index) => {
+  const currentCartItem = cartItems?.find(
+    (cart) => cart.productId === item._id
+  );
+
+  return (
               <motion.div key={item._id} variants={cardVariants}              >
                 <CarouselItem
                   className="
@@ -222,7 +281,31 @@ export default function Bestdeals() {
                         {/* Footer */}
                         <CardFooter className="flex flex-col px-0 pb-0">
                           {/* Quantity selector */}
-                          <div className="flex items-center justify-center gap-4 py-4">
+                          {currentCartItem ? (<div className="flex items-center justify-center gap-4 py-4">
+                
+
+                  <div className="flex items-center rounded-lg overflow-hidden border border-border">
+                    <button
+                      onClick={() => handleDecreaseQty(currentCartItem)}
+                      disabled={currentCartItem.quantity === 1}
+                      className={`px-2 py-3 hover:bg-muted-section ${currentCartItem.quantity === 1 ? "text-gray-400 cursor-not-allowed"
+                        : "text-secondary hover:bg-primary"}`}
+                    >
+                      −
+                    </button>
+
+                    <span className="px-6 font-semibold">
+                      {currentCartItem.quantity}
+                    </span>
+
+                    <button
+                      onClick={() => handleIncreaseQty(currentCartItem)}
+                      className="px-2 py-3 text-secondary hover:bg-muted-section"
+                    >
+                      +
+                    </button>
+                  </div>
+              </div>) :(<div><div className="flex items-center justify-center gap-4 py-4">
                             <motion.button
                               whileTap={quantities[index] > 1 ? { scale: 0.9 } : undefined}
                               disabled={(quantities[index] || 1) === 1}
@@ -286,7 +369,8 @@ export default function Bestdeals() {
                                 className="absolute inset-0 rounded-md bg-white/40"
                               />
                             )}
-                          </motion.button>
+                          </motion.button></div>)}
+
                         </CardFooter>
                       </CardContent>
                     </Card></motion.div>
@@ -294,7 +378,8 @@ export default function Bestdeals() {
 
                 </CarouselItem>
               </motion.div>
-            ))}
+            )
+})}
 
           </CarouselContent>
         </motion.div>
