@@ -173,7 +173,7 @@ export default function Navbar() {
 
           <Unauthenticated>
             <SignInButton mode="modal">
-              <button className="rounded-lg bg-primary-button px-4 py-2 text-xs font-bold text-tertiary">
+              <button className="rounded-lg bg-primary-button px-4 py-2 text-xs font-bold text-tertiary cursor-pointer">
                 Sign in
               </button>
             </SignInButton>

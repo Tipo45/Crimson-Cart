@@ -126,7 +126,7 @@ export const updateAddress = mutation({
     const existingAddress = await ctx.db.get(args.addressId);
     if (!existingAddress) throw new Error("Address not found");
 
-   await ctx.db.patch(args.addressId, {
+    await ctx.db.patch(args.addressId, {
       street: args.street,
       city: args.city,
       state: args.state,
@@ -641,6 +641,104 @@ export const updateCartQuantity = mutation({
   },
 });
 
+// apply coupon
+export const applyCoupon = mutation({
+  args: {
+    code: v.string(),
+  },
+
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      return {
+        success: false,
+        message: "UNAUTHORIZED",
+      };
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+
+    if (!user) {
+      return {
+        success: false,
+        message: "USER_NOT_FOUND",
+      };
+    }
+
+    const coupon = await ctx.db
+      .query("coupons")
+      .withIndex("by_code", (q) =>
+        q.eq("code", args.code)
+      )
+      .unique();
+
+    if (!coupon) {
+      return {
+        success: false,
+        message: "INVALID_CODE",
+      };
+    }
+
+    if (!coupon.active) {
+      return {
+        success: false,
+        message: "INACTIVE",
+      };
+    }
+
+    if (
+      coupon.expiresAt &&
+      Date.now() > new Date(coupon.expiresAt).getTime()
+    ) {
+      return {
+        success: false,
+        message: "EXPIRED",
+      };
+    }
+
+    if (
+      coupon.usageLimit &&
+      coupon.usedCount >= coupon.usageLimit
+    ) {
+      return {
+        success: false,
+        message: "LIMIT_REACHED",
+      };
+    }
+
+    const existingUsage = await ctx.db
+      .query("couponUsages")
+      .withIndex("by_coupon_user", (q) =>
+        q.eq("couponId", coupon._id)
+          .eq("userId", user._id)
+      )
+      .unique();
+
+    if (existingUsage) {
+      return {
+        success: false,
+        message: "ALREADY_USED",
+      };
+    }
+
+    return {
+      success: true,
+      coupon,
+    };
+  },
+});
+
+//complete order
+// await ctx.db.patch(coupon._id, {
+    //   usedCount: coupon.usedCount + 1,
+    // });
+
 // get all products
 export const getProducts = query({
   args: {},
@@ -698,6 +796,9 @@ export const getProductById = query({
     return product;
   },
 });
+
+// update inventory
+
 
 // get categories
 export const getCategories = query({

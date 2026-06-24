@@ -45,7 +45,7 @@ export default function UserAccountPage() {
   const hasCartItems = cartItems && cartItems.length > 0;
 
   // ================= QUERY USER =================
-  // const currentUser = useQuery(api.user.getCurrentUser);
+  const currentUser = useQuery(api.user.getCurrentUser);
 
   const tabContent = {
     orders: (<><Orders />
@@ -69,6 +69,7 @@ export default function UserAccountPage() {
               {/* Avatar */}
               <div className="w-20 h-20 rounded-full bg-secondary flex items-center justify-center text-tertiary text-2xl font-semibold">
                 {user?.firstName?.charAt(0) || "a"}
+                
               </div>
 
               {/* User Info */}
@@ -80,7 +81,7 @@ export default function UserAccountPage() {
                 </p>
 
                 <p className="text-muted text-xs mt-1">
-                  {user?.createdAt ? `Member since ${new Date(user.createdAt).toLocaleDateString()}` : "New Member"}
+                  {currentUser?._creationTime ? `Member since ${new Date(currentUser._creationTime).toLocaleDateString()}` : "New Member"}
                 </p>
 
                 {/* <div className="flex items-center gap-2 mt-2">

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
@@ -25,7 +25,16 @@ export const metadata: Metadata = {
     template: "%s | Crimson Cart"
   },
   description: "Crimson Cart is an e-commerce platform that offers a wide range of products at unbeatable prices.",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Crimson cart',
+  },
 };
+
+export const viewport: Viewport = {
+  themeColor: '#A31621',
+}
 
 export default function RootLayout({
   children,

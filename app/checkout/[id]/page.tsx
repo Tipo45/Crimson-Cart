@@ -21,8 +21,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { IoAdd } from "react-icons/io5";
+} from "@/components/ui/select";
 import { toast } from "sonner";
 
 
@@ -37,19 +36,34 @@ type CartItem = {
   imageUrl?: string;
 };
 
+type Coupon = {
+  _id: Id<"coupons">;
+  _creationTime: number;
+  code: string;
+  discountType: "fixed" | "percentage";
+  discountValue: number;
+  active: boolean;
+  expiresAt: string;
+  usageLimit: number;
+  usedCount: number;
+};
+
 export default function Checkout() {
   const { user, isSignedIn } = useUser();
   const storeUser = useMutation(api.user.store);
   const currentUser = useQuery(api.user.getCurrentUser);
+  
   const checkOutItems = useQuery(api.user.getCart) as CartItem[] | null | undefined;
   const [coupon, setCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
+  const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
   const [couponError, setCouponError] = useState("");
   const [selectAddress, setSelectedAddress] = useState("");
 
   const addresses = useQuery(api.user.getAddresses) ?? [];
   const [showForm, setShowForm] = useState(false);
   const updateAddress = useMutation(api.user.addAddress);
+  const applyCouponMutation = useMutation(api.user.applyCoupon);
 
   const [formData, setFormData] = useState({
     street: "",
@@ -61,7 +75,8 @@ export default function Checkout() {
   const handleUpdate = async () => {
     await updateAddress({
       street: formData.street,
-      city: `${formData.city}, ${formData.state}`,
+      city: formData.city, 
+      state: formData.state,
       country: formData.country,
     });
 
@@ -106,19 +121,63 @@ export default function Checkout() {
 
   const shippingPercentage = 0.10; // 10% shipping fee
 
-  const applyCoupon = () => {
-    if (coupon.toLowerCase() === "save10") {
-      setDiscount(subtotal * 0.1);
-      setCouponError("");
-    } else if (coupon.toLowerCase() === "save20") {
-      setDiscount(subtotal * 0.2);
-      setCouponError("");
-    } else {
-      setDiscount(0);
-      setCouponError("Invalid coupon code");
+const applyCoupon = async () => {
+  const result = await applyCouponMutation({
+  code: coupon.trim(),
+}) as
+  | {
+      success: true;
+      coupon: Coupon;
     }
-  };
+  | {
+      success: false;
+      message: string;
+    };
 
+  if (!result.success) {
+    setDiscount(0);
+
+    switch (result.message) {
+      case "INVALID_CODE":
+        setCouponError("Invalid coupon code");
+        break;
+
+      case "ALREADY_USED":
+        setCouponError("This coupon has already been used by you");
+        break;
+
+      case "EXPIRED":
+        setCouponError("This coupon has expired");
+        break;
+
+      case "INACTIVE":
+        setCouponError("This coupon is no longer active");
+        break;
+
+      case "LIMIT_REACHED":
+        setCouponError("Coupon usage limit has been reached");
+        break;
+
+      default:
+        setCouponError("Unable to apply coupon");
+    }
+
+    return;
+  }
+
+  const couponData = result.coupon;
+
+  if (couponData.discountType === "percentage") {
+    setDiscount(
+      subtotal * (couponData.discountValue / 100)
+    );
+  } else {
+    setDiscount(couponData.discountValue);
+  }
+
+  setCouponError("");
+  setAppliedCoupon(couponData);
+};
   const shipping = checkOutItems.length > 0 ? shippingPercentage * subtotal : 0;
   const total = subtotal + shipping - discount;
 
@@ -345,7 +404,8 @@ export default function Checkout() {
                 />
                 <button
                   onClick={applyCoupon}
-                  className="bg-secondary text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition"
+                  disabled={!coupon}
+                  className="bg-secondary text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Apply
                 </button>

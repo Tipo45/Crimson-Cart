@@ -293,8 +293,15 @@ export default function ProductDetails() {
               </div>
             </div>
 
-            {/* Quantity Selector */}
-
+            {product.quantity === 0 ? (
+              <span className="text-red-500 text-lg">Out of Stock</span>
+            ) : product.quantity <= 5 ? (
+              <span className="text-orange-500 text-lg">
+                Only {product.quantity} left
+              </span>
+            ) : (
+              <span className="text-green-500 text-lg">In Stock</span>
+            )}
 
             {/* Action Buttons */}
             <div className="flex gap-4 pt-4">
@@ -324,7 +331,7 @@ export default function ProductDetails() {
                   </div>
                 </div>
               </div>) : (<motion.button
-                disabled={cartLoading === product._id}
+                disabled={product.quantity <= 0 && cartLoading === product._id}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleAddToCart}
@@ -369,12 +376,12 @@ export default function ProductDetails() {
 
                   <div className="flex text-yellow-500 text-xl">
                     {[...Array(5)].map((_, i) =>
-                    i < Math.round(ratingsData?.averageRating ?? 0) ? (
-                      <FaStar key={i} />
-                    ) : (
-                      <FaRegStar key={i} />
-                    )
-                  )}
+                      i < Math.round(ratingsData?.averageRating ?? 0) ? (
+                        <FaStar key={i} />
+                      ) : (
+                        <FaRegStar key={i} />
+                      )
+                    )}
                   </div>
                 </div>
 

@@ -41,6 +41,19 @@ export default function Address() {
         state: "",
         country: "",
     });
+    const [addressErrors, setAddressErrors] = useState({
+    street: "",
+    city: "",
+    state: "",
+    country: "",
+  });
+
+  const [addressTouched, setAddressTouched] = useState({
+    street: false,
+    city: false,
+    state: false,
+    country: false,
+  });
 
     const resetForm = () => {
         setFormData({
@@ -49,9 +62,83 @@ export default function Address() {
             state: "",
             country: "",
         });
+
+        setAddressErrors({
+            street: "",
+            city: "",
+            state: "",
+            country: "",
+        });
+
+        setAddressTouched({
+            street: false,
+            city: false,
+            state: false,
+            country: false,
+        });
+
         setEditingAddressId(null);
         setShowForm(false);
     };
+
+    const validateStreet = (street: string): string | null => {
+  if (!street.trim()) return "Street is required";
+  if (street.length < 3) return "Street must be at least 3 characters";
+  return null;
+};
+
+const validateCity = (city: string): string | null => {
+  if (!city.trim()) return "City is required";
+  if (city.length < 3) return "City must be at least 3 characters";
+  if (!/^[a-zA-Z\s\-]+$/.test(city)) return "City should only contain letters and spaces";
+  return null;
+};
+
+const validateState = (state: string): string | null => {
+  if (!state.trim()) return "State is required";
+  if (state.length < 4) return "State must be at least 4 characters";
+  if (!/^[a-zA-Z\s\-]+$/.test(state)) return "State should only contain letters and spaces";
+  return null;
+};
+const validateCountry = (country: string): string | null => {
+  if (!country.trim()) return "Country is required";
+  if (country.length < 3) return "Country must be at least 3 characters";
+  if (!/^[a-zA-Z\s\-]+$/.test(country)) return "Country should only contain letters and spaces";
+  return null;
+};
+
+
+
+  const handleChange = (field: string, value: string) => {
+    setFormData({ ...formData, [field]: value });
+    setAddressTouched({ ...addressTouched, [field]: true });
+
+    let error = "";
+    switch (field) {
+      case "street":
+        error = validateStreet(value) || "";
+        break;
+      case "city":
+        error = validateCity(value) || "";
+        break;
+      case "state":
+        error = validateState(value) || "";
+        break;
+      case "country":
+        error = validateCountry(value) || "";
+        break;
+    }
+    setAddressErrors({ ...addressErrors, [field]: error });
+  };
+
+  const isCardFormValid = () => {
+    return (
+      !validateStreet(formData.street) &&
+      !validateCity(formData.city) &&
+      !validateStreet(formData.state) &&
+      !validateCountry(formData.country)
+    );
+  };
 
     const handleEditClick = (address: Address) => {
         setEditingAddressId(address._id);
@@ -67,6 +154,29 @@ export default function Address() {
     };
 
     const handleSaveAddress = async () => {
+        const streetError = validateStreet(formData.street);
+        const cityError = validateCity(formData.city);
+        const stateError = validateState(formData.state);
+        const countryError = validateCountry(formData.country);
+
+        setAddressErrors({
+            street: streetError || "",
+            city: cityError || "",
+            state: stateError ||"",
+            country: countryError || "",
+        });
+
+        setAddressTouched({
+            street: true,
+            city: true,
+            state: true,
+            country: true,
+        })
+
+        if(streetError || cityError || stateError || countryError) {
+            return;
+        }
+
         try {
             setSaveLoading(true);
             if (editingAddressId) {
@@ -114,16 +224,6 @@ export default function Address() {
         } finally {
             setDeletingId(null);
         }
-    };
-
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-    ) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
     };
 
     useEffect(() => {
@@ -249,10 +349,14 @@ export default function Address() {
                                         type="text"
                                         name="street"
                                         value={formData.street}
-                                        onChange={handleChange}
+                                        onChange={(e) => handleChange("street", e.target.value)}
                                         placeholder="Enter house address"
-                                        className="w-full rounded-lg border border-input-border bg-background px-4 py-3 outline-none focus:ring-2 focus:ring-secondary-button"
+                                        className={`w-full rounded-lg border px-4 py-3 outline-none focus:ring-2 focus:ring-secondary-button transition ${addressTouched.street && addressErrors.street ? "border-red-500 focus:ring-red-500" : addressTouched.street && !addressErrors.street && formData.street ? "border-green-500 focus:ring-green-500"
+                      : "border-input-border"}`}
                                     />
+                                    {addressTouched.street && addressErrors.street && (
+                                        <p className="text-red-500 text-sm mt-1">{addressErrors.street}</p>
+                                    )}
                                 </div>
 
                                 {/* City */}
@@ -262,10 +366,14 @@ export default function Address() {
                                         type="text"
                                         name="city"
                                         value={formData.city}
-                                        onChange={handleChange}
-                                        placeholder="Enter city"
-                                        className="w-full rounded-lg border border-input-border bg-background px-4 py-3 outline-none focus:ring-2 focus:ring-secondary-button"
+                                        onChange={(e) => handleChange("city", e.target.value)}
+                                        placeholder="Enter house address"
+                                        className={`w-full rounded-lg border px-4 py-3 outline-none focus:ring-2 focus:ring-secondary-button transition ${addressTouched.city && addressErrors.city ? "border-red-500 focus:ring-red-500" : addressTouched.city && !addressErrors.city && formData.city ? "border-green-500 focus:ring-green-500"
+                      : "border-input-border"}`}
                                     />
+                                    {addressTouched.city && addressErrors.city && (
+                                        <p className="text-red-500 text-sm mt-1">{addressErrors.city}</p>
+                                    )}
                                 </div>
 
                                 {/* State */}
@@ -275,10 +383,14 @@ export default function Address() {
                                         type="text"
                                         name="state"
                                         value={formData.state}
-                                        onChange={handleChange}
-                                        placeholder="Enter state"
-                                        className="w-full rounded-lg border border-input-border bg-background px-4 py-3 outline-none focus:ring-2 focus:ring-secondary-button"
+                                        onChange={(e) => handleChange("state", e.target.value)}
+                                        placeholder="Enter house address"
+                                        className={`w-full rounded-lg border px-4 py-3 outline-none focus:ring-2 focus:ring-secondary-button transition ${addressTouched.state && addressErrors.state ? "border-red-500 focus:ring-red-500" : addressTouched.state && !addressErrors.state && formData.state ? "border-green-500 focus:ring-green-500"
+                      : "border-input-border"}`}
                                     />
+                                    {addressTouched.state && addressErrors.state && (
+                                        <p className="text-red-500 text-sm mt-1">{addressErrors.state}</p>
+                                    )}
                                 </div>
 
                                 {/* Country */}
@@ -288,10 +400,14 @@ export default function Address() {
                                         type="text"
                                         name="country"
                                         value={formData.country}
-                                        onChange={handleChange}
-                                        placeholder="Enter country"
-                                        className="w-full rounded-lg border border-input-border bg-background px-4 py-3 outline-none focus:ring-2 focus:ring-secondary-button"
+                                        onChange={(e) => handleChange("country", e.target.value)}
+                                        placeholder="Enter house address"
+                                        className={`w-full rounded-lg border px-4 py-3 outline-none focus:ring-2 focus:ring-secondary-button transition ${addressTouched.country && addressErrors.country ? "border-red-500 focus:ring-red-500" : addressTouched.country && !addressErrors.country && formData.country ? "border-green-500 focus:ring-green-500"
+                      : "border-input-border"}`}
                                     />
+                                    {addressTouched.country && addressErrors.country && (
+                                        <p className="text-red-500 text-sm mt-1">{addressErrors.country}</p>
+                                    )}
                                 </div>
                             </div>
 
