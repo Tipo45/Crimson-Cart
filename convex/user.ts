@@ -30,6 +30,84 @@ export const store = mutation({
   }
 });
 
+// add vendor
+export const addVendor = mutation({
+  args: {
+    businessName: v.string(),
+    phoneNumber: v.string(),
+    address: v.string(),
+    cacNumber: v.string(),
+  },
+
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const existingVendor = await ctx.db
+      .query("vendors")
+      .withIndex("by_user", q => q.eq("userId", user._id))
+      .unique();
+
+    if (existingVendor) {
+      throw new Error("You have already submitted a vendor application.");
+    }
+
+    return await ctx.db.insert("vendors", {
+      userId: user._id,
+      businessName: args.businessName,
+      businessEmail: user.email,
+      businessAddress: args.address,
+      phoneNumber: args.phoneNumber,
+      cacNumber: args.cacNumber,
+      approved: "pending",
+    })
+  },
+});
+
+// get vendor
+export const getVendor = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      return null;
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+
+    if (!user) {
+      return null;
+    }
+
+    return await ctx.db
+      .query("vendors")
+      .withIndex("by_user", (q) =>
+        q.eq("userId", user._id)
+      )
+      .unique();
+  }
+});
+
 // add address
 export const addAddress = mutation({
   args: {
@@ -736,8 +814,8 @@ export const applyCoupon = mutation({
 
 //complete order
 // await ctx.db.patch(coupon._id, {
-    //   usedCount: coupon.usedCount + 1,
-    // });
+//   usedCount: coupon.usedCount + 1,
+// });
 
 // get all products
 export const getProducts = query({
@@ -774,6 +852,54 @@ export const getProducts = query({
 });
 
 // add products
+export const addProduct = mutation({
+  args: {
+    category: v.string(),
+    name: v.string(),
+    price: v.number(),
+    quantity: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Unauthorized");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const vendor = await ctx.db
+      .query("vendors")
+      .withIndex("by_user", q =>
+        q.eq("userId", user._id))
+      .unique();
+
+    if (!vendor) {
+      throw new Error("Vendor account not found.");
+    }
+
+    if (vendor.approved !== "approved") {
+      throw new Error("Vendor account has not been approved.");
+    }
+
+    return await ctx.db.insert("products", {
+      userId: user._id,
+      category: args.category,
+      name: args.name,
+      price: args.price,
+      quantity: args.quantity,
+    });
+  },
+});
 
 // display image from storage
 export const getImageUrl = query({

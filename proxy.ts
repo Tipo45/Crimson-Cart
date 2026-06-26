@@ -14,7 +14,8 @@ const isProtectedRoute = createRouteMatcher([
   '/user(.*)',
   '/seller(.*)',
   '/cart(.*)',
-  '/checkout(.*)'
+  '/checkout(.*)',
+  "/vendor(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
@@ -23,8 +24,9 @@ export default clerkMiddleware(async (auth, req) => {
     return;
   }
   
-  // Protect all other routes
-  await auth.protect();
+  if (isProtectedRoute(req)) {
+    await auth.protect();
+  }
 });
 
 export const config = {

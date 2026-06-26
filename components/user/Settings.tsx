@@ -15,8 +15,8 @@ export default function Settings() {
     if (!phone.trim()) return "Phone number is required";
     // Remove all non-digit characters
     const cleaned = phone.replace(/\D/g, '');
-    if (cleaned.length < 10) return "Phone number must be at least 10 digits";
-    if (cleaned.length > 15) return "Phone number is too long";
+    if (cleaned.length < 11) return "Phone number must be at least 11 digits";
+    if (cleaned.length > 11) return "Phone number is too long";
     return null;
   };
 

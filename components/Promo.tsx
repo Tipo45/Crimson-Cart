@@ -18,7 +18,7 @@ export default function Promo() {
   return (
     <section
       ref={containerRef}
-      className="relative h-[60vh] min-h-100 rounded-2xl overflow-hidden tablet:w-screen tablet:left-1/2 tablet:right-1/2 tablet:-ml-[50vw] tablet:-mr-[50vw]"
+      className="relative h-[60vh] min-h-100 rounded-2xl overflow-hidden tablet:w-screen tablet:left-1/2 tablet:right-1/2 tablet:ml-[-50vw] tablet:mr-[-50vw]"
     >
       <motion.div
         className="relative w-full h-full"

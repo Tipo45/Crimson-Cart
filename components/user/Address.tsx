@@ -131,7 +131,7 @@ const validateCountry = (country: string): string | null => {
     setAddressErrors({ ...addressErrors, [field]: error });
   };
 
-  const isCardFormValid = () => {
+  const isAddressFormValid = () => {
     return (
       !validateStreet(formData.street) &&
       !validateCity(formData.city) &&
@@ -171,7 +171,7 @@ const validateCountry = (country: string): string | null => {
             city: true,
             state: true,
             country: true,
-        })
+        });
 
         if(streetError || cityError || stateError || countryError) {
             return;
@@ -415,7 +415,7 @@ const validateCountry = (country: string): string | null => {
                             <div className="flex items-center gap-4 mt-6">
                                 <button
                                     onClick={handleSaveAddress}
-                                    disabled={saveLoading}
+                                    disabled={saveLoading || !isAddressFormValid()}
                                     className="px-6 py-3 rounded-lg bg-secondary text-tertiary hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {saveLoading ? (

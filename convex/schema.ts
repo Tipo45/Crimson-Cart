@@ -12,7 +12,10 @@ export default defineSchema({
             v.literal("admin")
         )),
 
-        vendorApproved: v.optional(v.boolean()),
+        vendorApproved: v.optional( v.union(
+            v.literal("pending"),
+            v.literal("approved"),
+            v.literal("rejected"))),
     }).index("by_token", ["tokenIdentifier"]),
 
     vendors: defineTable({
@@ -21,11 +24,18 @@ export default defineSchema({
         businessEmail: v.string(),
         phoneNumber: v.string(),
         businessAddress: v.string(),
+        cacNumber: v.string(),
         description: v.optional(v.string()),
         logo: v.optional(v.string()),
-        approved: v.boolean(),
-        createdAt: v.number(),
-    }).index("by_user", ["userId"]),
+        approved: v.union(
+            v.literal("pending"),
+            v.literal("approved"),
+            v.literal("rejected")
+        ),
+        rejectionReason: v.optional(v.string()),
+    }).index("by_user", ["userId"])
+    .index("by_status", ["approved"])
+    .index("by_business_name",["businessName"]),
 
     address: defineTable({
             userId: v.id("users"),

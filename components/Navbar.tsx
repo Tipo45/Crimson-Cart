@@ -19,12 +19,17 @@ export default function Navbar() {
   const [showNavbar, setShowNavbar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const currentUser = useQuery(api.user.getCurrentUser);
+  const vendor = useQuery(api.user.getVendor);
   const router= useRouter();
 
   const goToUserPage = () => {
-  if (!currentUser) return;
+    if (vendor) {
+      router.push(`/vendor/${currentUser?._id}`)
+    } else{
+      if (!currentUser) return;
 
-  router.push(`/user/${currentUser._id}`);
+  router.push(`/user/${currentUser._id}`);}
+  
 };
 
   // ESC to close

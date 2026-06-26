@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { useUser } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import Vendoralert from "@/components/Vendoralert";
 
 export default function Home() {
   const { scrollYProgress } = useScroll();
@@ -59,6 +60,7 @@ export default function Home() {
             <Bestdeals />
             <Popularcategories />
             <Promo />
+            <Vendoralert />
             <Deals />
             <Newsletter />
             <FAQs />

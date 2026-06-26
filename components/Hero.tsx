@@ -13,6 +13,10 @@ export default function Hero() {
   const handleNext = () => {
     router.push("/products")
   }
+
+  const handleVendor = () => {
+    router.push("/vendor/registration")
+  }
   
   return (
     <section className="w-full px-4 tablet:px-8 xl:px-16 py-12">
@@ -118,6 +122,7 @@ export default function Hero() {
               </motion.button>
 
               <motion.button
+              onClick={handleVendor}
                 variants={{
                   hidden: { opacity: 0, scale: 0.8 },
                   visible: {
@@ -128,7 +133,7 @@ export default function Hero() {
                 }}
                 className="cursor-pointer border border-primary-button text-primary-button font-semibold rounded-lg px-6 py-3 hover:bg-primary-button hover:text-tertiary transition"
               >
-                Contact Us
+                Become a Vendor
               </motion.button>
             </motion.div>
           </div>

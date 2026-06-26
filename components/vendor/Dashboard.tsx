@@ -10,11 +10,11 @@ import { useEffect, useState } from "react";
 export default function SellerDashboard() {
 
   const [loading, setLoading] = useState(true);
-  
-      useEffect(() => {
-                  const timer = setTimeout(() => setLoading(false), 1500);
-                  return () => clearTimeout(timer);
-              }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
   return (
     <>
       {/* ================= STATS CARDS ================= */}
@@ -126,73 +126,73 @@ export default function SellerDashboard() {
 
 
 type StatCardProps = {
-    icon: React.ReactNode;
-    value: string;
-    label: string;
-    growth: string;
+  icon: React.ReactNode;
+  value: string;
+  label: string;
+  growth: string;
 };
 
 function StatCard({ icon, value, label, growth }: StatCardProps) {
-    return (
-        <div className="bg-tertiary border border-border rounded-xl p-5 flex flex-col gap-4">
-            <div className="flex justify-between items-center">
-                <div className="w-10 h-10 rounded-lg bg-accent-background text-accent-text flex items-center justify-center">
-                    {icon}
-                </div>
-                <span className="text-success text-sm">{growth}</span>
-            </div>
-
-            <div>
-                <p className="text-xl font-semibold">{value}</p>
-                <p className="text-sm text-muted">{label}</p>
-            </div>
+  return (
+    <div className="bg-tertiary border border-border rounded-xl p-5 flex flex-col gap-4">
+      <div className="flex justify-between items-center">
+        <div className="w-10 h-10 rounded-lg bg-accent-background text-accent-text flex items-center justify-center">
+          {icon}
         </div>
-    );
+        <span className="text-success text-sm">{growth}</span>
+      </div>
+
+      <div>
+        <p className="text-xl font-semibold">{value}</p>
+        <p className="text-sm text-muted">{label}</p>
+      </div>
+    </div>
+  );
 }
 
 /* ================= RECENT ORDER ROW ================= */
 
 type RecentOrderRowProps = {
-    title: string;
-    orderId: string;
-    customer: string;
-    price: string;
-    status: string;
-    statusStyle: string;
-    last?: boolean;
+  title: string;
+  orderId: string;
+  customer: string;
+  price: string;
+  status: string;
+  statusStyle: string;
+  last?: boolean;
 };
 
 function RecentOrderRow({
-    title,
-    orderId,
-    customer,
-    price,
-    status,
-    statusStyle,
-    last,
+  title,
+  orderId,
+  customer,
+  price,
+  status,
+  statusStyle,
+  last,
 }: RecentOrderRowProps) {
-    return (
-        <div
-            className={`flex justify-between items-center px-6 py-4 ${!last && "border-b border-divider"
-                }`}
-        >
-            <div>
-                <p className="font-medium">{title}</p>
-                <p className="text-xs text-muted">
-                    {orderId} • {customer}
-                </p>
-            </div>
+  return (
+    <div
+      className={`flex justify-between items-center px-6 py-4 ${!last && "border-b border-divider"
+        }`}
+    >
+      <div>
+        <p className="font-medium">{title}</p>
+        <p className="text-xs text-muted">
+          {orderId} • {customer}
+        </p>
+      </div>
 
-            <div className="flex items-center gap-6">
-                <span className="font-medium">{price}</span>
-                <span
-                    className={`text-xs px-3 py-1 rounded-full ${statusStyle}`}
-                >
-                    {status}
-                </span>
-            </div>
-        </div>
-    );
+      <div className="flex items-center gap-6">
+        <span className="font-medium">{price}</span>
+        <span
+          className={`text-xs px-3 py-1 rounded-full ${statusStyle}`}
+        >
+          {status}
+        </span>
+      </div>
+    </div>
+  );
 }
 
 function ActivityItem({
