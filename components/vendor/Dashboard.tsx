@@ -6,6 +6,7 @@ import { BsCartCheck } from "react-icons/bs";
 import { IoAlertCircle } from "react-icons/io5";
 import { MdRateReview } from "react-icons/md";
 import { useEffect, useState } from "react";
+import SettingSkeleton from "../skeletonui/user/SettingsSkeleton";
 
 export default function SellerDashboard() {
 
@@ -16,9 +17,11 @@ export default function SellerDashboard() {
     return () => clearTimeout(timer);
   }, []);
   return (
-    <>
+    <div>
+      {loading ? (<>
+      <SettingSkeleton /></>) : (<>
       {/* ================= STATS CARDS ================= */}
-      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4 mb-8">
+      <div className="grid gap-6 grid-cols-2 tablet:grid-cols-4 mb-8">
         <StatCard icon={<TbCurrencyNaira />} value="₦12,480" label="Revenue" growth="+18%" />
         <StatCard icon={<LuPackage />} value="164" label="Orders" growth="+12%" />
         <StatCard icon={<FiEye />} value="3.2k" label="Views" growth="+7%" />
@@ -118,7 +121,8 @@ export default function SellerDashboard() {
         </div>
 
       </div>
-    </>
+    </>)}
+    </div>
   );
 }
 

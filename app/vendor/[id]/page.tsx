@@ -16,6 +16,8 @@ import { api } from "@/convex/_generated/api";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs/server";
+import { FaTimes } from "react-icons/fa";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 type TabItem = {
   id: string;
@@ -80,7 +82,23 @@ export default function SellerDashboardPage() {
                   <span className="text-sm font-medium">{vendor && (<>Vendor</>)}</span>
 
                   <span className="rounded-full">
-                    {vendor?.approved === "approved" ? (<LuBadgeCheck size={25} className="text-green-500" />) : (<LuBadgeCheck size={25} className="text-green-500 opacity-50" />)}
+                    {vendor?.approved === "approved" ? (
+                      <div>
+                        <HoverCard>
+                          <HoverCardTrigger><LuBadgeCheck size={25} className="text-green-500" /></HoverCardTrigger>
+                          <HoverCardContent className="flex w-32 flex-col gap-1">
+                            <span>verified</span>
+                          </HoverCardContent>
+                        </HoverCard>
+                      </div>) :
+                      (<div>
+                        <HoverCard>
+                          <HoverCardTrigger><FaTimes size={25} className="text-red-600" /></HoverCardTrigger>
+                          <HoverCardContent className="flex w-32 flex-col gap-1">
+                            <span>unverified</span>
+                          </HoverCardContent>
+                        </HoverCard>
+                      </div>)}
                   </span>
                 </div>
               </div>
@@ -97,12 +115,12 @@ export default function SellerDashboardPage() {
                   <TabsTrigger
                     key={tab.id}
                     value={tab.id}
-                    className="relative flex-1 rounded-lg px-4 py-2 text-xs lg:text-sm font-medium text-secondary-text cursor-pointer transition-colors data-[state=active]:text-tertiary"
+                    className="relative flex-1 rounded-lg px-4 py-2 text-xs lg:text-sm font-medium text-black cursor-pointer transition-colors"
                   >
                     {activeTab === tab.id && (
                       <motion.div
                         layoutId="activeSellerTab"
-                        className="absolute inset-0 bg-secondary rounded-lg z-0"
+                        className="absolute inset-0 bg-secondary text-tertiary rounded-lg z-0"
                         transition={{
                           type: "spring",
                           stiffness: 350,
@@ -111,7 +129,9 @@ export default function SellerDashboardPage() {
                       />
                     )}
 
-                    <span className="relative z-10">{tab.label}</span>
+                    <span className={`relative z-10 ${activeTab === tab.id ? 'text-tertiary' : 'text-primary-text'}`}>
+                      {tab.label}
+                    </span>
                   </TabsTrigger>
                 ))}
               </TabsList>

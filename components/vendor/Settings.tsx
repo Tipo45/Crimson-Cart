@@ -2,13 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { FaStore, FaMoneyBillWave, FaTruck, FaBell, FaLock } from "react-icons/fa";
+import { FaStore, FaMoneyBillWave, FaTruck, FaBell, FaLock, FaSignOutAlt } from "react-icons/fa";
 import SettingSkeleton from "../skeletonui/user/SettingsSkeleton";
 import Providers from "@/app/providers";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { SignOutButton } from "@clerk/nextjs";
 
 export default function SellerSettings() {
 
   const [loading, setLoading] = useState(true);
+  const vendor = useQuery(api.user.getVendor);
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1500);
@@ -26,7 +30,7 @@ export default function SellerSettings() {
             description="Manage your store name, logo, banner and description."
           >
             <div className="grid gap-4 tablet:grid-cols-2">
-              <Input label="Store Name" placeholder="Azebi Crafts" />
+              <Input label="Store Name" placeholder={vendor?.businessName} />
               <Input label="Store Logo URL" placeholder="https://..." />
               <Input label="Store Banner URL" placeholder="https://..." />
             </div>
@@ -34,7 +38,7 @@ export default function SellerSettings() {
             <div className="mt-4">
               <Textarea
                 label="Store Description"
-                placeholder="Tell customers about your store..."
+                placeholder={vendor?.description}
               />
             </div>
 
@@ -114,6 +118,23 @@ export default function SellerSettings() {
           </SettingsCard>
 
         </div>
+        {!loading && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.5 }}
+                    className="fixed bottom-6 right-6"
+                  >
+                    <SignOutButton redirectUrl="/?logout=success">
+                      <button
+                        className="w-14 h-14 bg-error text-white rounded-full shadow-lg flex items-center justify-center hover:bg-error/90 transition cursor-pointer"
+                      >
+                        <FaSignOutAlt size={20} />
+                      </button>
+                    </SignOutButton>
+        
+                  </motion.div>
+                )}
       </div></Providers>)}</>
 
   );

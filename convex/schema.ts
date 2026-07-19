@@ -12,7 +12,7 @@ export default defineSchema({
             v.literal("admin")
         )),
 
-        vendorApproved: v.optional( v.union(
+        vendorApproved: v.optional(v.union(
             v.literal("pending"),
             v.literal("approved"),
             v.literal("rejected"))),
@@ -34,16 +34,16 @@ export default defineSchema({
         ),
         rejectionReason: v.optional(v.string()),
     }).index("by_user", ["userId"])
-    .index("by_status", ["approved"])
-    .index("by_business_name",["businessName"]),
+        .index("by_status", ["approved"])
+        .index("by_business_name", ["businessName"]),
 
     address: defineTable({
-            userId: v.id("users"),
-            street: v.string(),
-            city: v.string(),
-            state: v.string(),
-            country: v.string(),
-        }).index("by_user", ["userId"]),
+        userId: v.id("users"),
+        street: v.string(),
+        city: v.string(),
+        state: v.string(),
+        country: v.string(),
+    }).index("by_user", ["userId"]),
 
     cards: defineTable({
         userId: v.id("users"),
@@ -62,14 +62,29 @@ export default defineSchema({
     }).index("by_user", ["userId"]),
 
     products: defineTable({
-        userId: v.id("users"),
+        vendorId: v.id("vendors"),
         category: v.string(),
         name: v.string(),
+        shortDescription: v.string(),
         price: v.number(),
+        discountPrice: v.optional(v.number()),
         quantity: v.number(),
-        imageId: v.optional(v.id("_storage")),
+        weight: v.string(),
+        height: v.string(),
+        length: v.optional(v.string()),
+        width: v.optional(v.string()),
+        color: v.string(),
+        size: v.string(),
+        warranty: v.optional(v.string()),
+        featured: v.optional(v.boolean()),
+        status: v.optional(v.union(
+            v.literal("draft"),
+            v.literal("published")
+        )),
+        imageIds: v.optional(v.array(v.id("_storage"))),
     }).index("by_category", ["category"])
-        .index("by_user", ["userId"]),
+        .index("by_vendor", ["vendorId"])
+        .index("by_status", ["status"]),
 
     cart: defineTable({
         userId: v.id("users"),

@@ -851,13 +851,34 @@ export const getProducts = query({
   },
 });
 
+// view product by vendor
+export const viewVendorProduct = query({
+  args: { vendorId: v.id("vendors") },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("products")
+      .withIndex("by_vendor", (q) => q.eq("vendorId", args.vendorId))
+      .collect();
+  },
+});
+
 // add products
 export const addProduct = mutation({
   args: {
     category: v.string(),
     name: v.string(),
+    shortDescription: v.string(),
     price: v.number(),
+    discountPrice: v.number(),
     quantity: v.number(),
+    weight: v.string(),
+    height: v.string(),
+    length: v.string(),
+    width: v.string(),
+    color: v.string(),
+    size: v.string(),
+    warranty: v.string(),
+    imageIds: v.optional(v.array(v.id("_storage"))),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -892,13 +913,29 @@ export const addProduct = mutation({
     }
 
     return await ctx.db.insert("products", {
-      userId: user._id,
+      vendorId: vendor._id,
       category: args.category,
       name: args.name,
+      shortDescription: args.shortDescription,
       price: args.price,
+      discountPrice: args.discountPrice,
       quantity: args.quantity,
+      weight: args.weight,
+      height: args.height,
+      length: args.length,
+      width: args.width,
+      color: args.color,
+      size: args.size,
+      warranty: args.warranty,
+      imageIds: args.imageIds,
+      featured: false,
+      status: "draft"
     });
   },
+});
+
+export const generateUploadUrl = mutation(async (ctx) => {
+  return await ctx.storage.generateUploadUrl();
 });
 
 // display image from storage
@@ -978,6 +1015,13 @@ export const addReview = mutation({
       throw new Error("User not found");
     }
 
+    const vendor = await ctx.db
+      .query("vendors")
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .unique();
+
+
+
     const product = await ctx.db.get(args.productId);
 
     if (!product) {
@@ -985,7 +1029,7 @@ export const addReview = mutation({
     }
 
     // Seller cannot review own product
-    if (product.userId === user._id) {
+    if (vendor && product.vendorId === vendor._id) {
       throw new Error("You cannot review your own product");
     }
 

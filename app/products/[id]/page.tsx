@@ -36,6 +36,7 @@ export default function ProductDetails() {
     useState<Id<"products"> | null>(null);
   const [wishlistLoading, setWishlistLoading] =
     useState<Id<"products"> | null>(null);
+    const vendor = useQuery(api.user.getVendor);
 
   const [selectedImage, setSelectedImage] = useState(0);
 
@@ -243,15 +244,15 @@ export default function ProductDetails() {
 
                 <span className="text-secondary-text">
                   Sold by:
-                  <span className="font-semibold text-secondary ml-1">
-                    Crimson Stores
+                  <span className="font-semibold text-secondary ml-1 capitalize">
+                    {vendor?.businessName}
                   </span>
                 </span>
               </div>
             </div>
 
             <p className="text-gray-600 dark:text-muted-gray leading-relaxed">
-              {/* {product.description} */}
+              {product.shortDescription}
             </p>
 
             <div className="bg-tertiary rounded-xl p-4 border border-border">
@@ -278,7 +279,7 @@ export default function ProductDetails() {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-secondary-text">Vendor</span>
-                  <span className="font-medium">Crimson Stores</span>
+                  <span className="font-medium capitalize">{vendor?.businessName}</span>
                 </div>
 
                 <div className="flex justify-between">
