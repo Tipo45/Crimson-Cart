@@ -101,33 +101,17 @@ export default function ReviewStep({ formData }: Props) {
                     <div className="p-1.5 bg-blue-100 rounded-lg">
                         <TbRulerMeasure className="w-3.5 h-3.5 text-secondary" />
                     </div>
-                    <span className="text-sm text-slate-500">Length</span>
+                    <span className="text-sm text-slate-500">Dimensions (l x w x h)</span>
                 </div>
-                <span className="text-sm font-medium text-slate-900">
+                <span className="text-xs font-medium text-slate-900">
                     {formData.length === "" ? "-" : formData.length}
                 </span>
-            </div>
-
-            <div className="flex items-center justify-between p-4 hover:bg-slate-50/50 transition-colors">
-                <div className="flex items-center gap-3">
-                    <div className="p-1.5 bg-blue-100 rounded-lg">
-                        <TbViewportWide className="w-3.5 h-3.5 text-secondary" />
-                    </div>
-                    <span className="text-sm text-slate-500">Width</span>
-                </div>
-                <span className="text-sm font-medium text-slate-900">
+                <span className="text-xs text-slate-900">x</span>
+                <span className="text-xs font-medium text-slate-900">
                     {formData.width === "" ? "-" : formData.width}
                 </span>
-            </div>
-
-            <div className="flex items-center justify-between p-4 hover:bg-slate-50/50 transition-colors">
-                <div className="flex items-center gap-3">
-                    <div className="p-1.5 bg-blue-100 rounded-lg">
-                        <MdHeight className="w-3.5 h-3.5 text-secondary" />
-                    </div>
-                    <span className="text-sm text-slate-500">Height</span>
-                </div>
-                <span className="text-sm font-medium text-slate-900">
+                <span className="text-xs text-slate-900">x</span>
+                 <span className="text-xs font-medium text-slate-900">
                     {formData.height === "" ? "-" : formData.height}
                 </span>
             </div>

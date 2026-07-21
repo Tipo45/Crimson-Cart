@@ -142,7 +142,6 @@ const categoryFromUrl = searchParams.get("category");
                                     }}
                                 />
                             </div>
-
                             <div
                                 className="flex-1 bg-black/40"
                                 onClick={() => setDrawerOpen(false)}
@@ -154,8 +153,7 @@ const categoryFromUrl = searchParams.get("category");
                     <main className="flex-1 p-4 tablet:p-6 bg-muted-section">
                         <div className="
   grid 
-  grid-cols-2 
-  sm:grid-cols-3 
+  grid-cols-2
   tablet:grid-cols-4 
   lg:grid-cols-5 
   xl:grid-cols-6 

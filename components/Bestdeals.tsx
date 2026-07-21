@@ -245,13 +245,14 @@ export default function Bestdeals() {
                           className="relative h-40 w-full mb-4 overflow-hidden rounded-lg"
                         >
                           <Image
-                            src={item.imageId ? `/api/image/${item.imageId}` : "/placeholder.png"}
+                            src={item.imageUrls?.[0] ?? "/placeholder.png"}
                             alt={item.name}
                             fill
                             sizes="100vw"
                             style={{ objectFit: "cover" }}
                             className="rounded-lg"
                           />
+                          
                         </motion.div>
                         {/* </div> */}
 

@@ -81,7 +81,7 @@ export default defineSchema({
             v.literal("draft"),
             v.literal("published")
         )),
-        imageIds: v.optional(v.array(v.id("_storage"))),
+        imageIds: v.array(v.id("_storage")),
     }).index("by_category", ["category"])
         .index("by_vendor", ["vendorId"])
         .index("by_status", ["status"]),

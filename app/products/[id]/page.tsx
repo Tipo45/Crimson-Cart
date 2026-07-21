@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useQuery, useMutation } from "convex/react";
@@ -36,7 +36,7 @@ export default function ProductDetails() {
     useState<Id<"products"> | null>(null);
   const [wishlistLoading, setWishlistLoading] =
     useState<Id<"products"> | null>(null);
-    const vendor = useQuery(api.user.getVendor);
+  const vendor = useQuery(api.user.getVendor);
 
   const [selectedImage, setSelectedImage] = useState(0);
 
@@ -156,6 +156,10 @@ export default function ProductDetails() {
     }
   };
 
+  useEffect(() => {
+    setSelectedImage(0);
+  }, [product?._id]);
+
 
 
 
@@ -193,27 +197,26 @@ export default function ProductDetails() {
           {/* Product Images */}
           <div className="space-y-4">
             <div className="relative h-96 rounded-xl overflow-hidden bg-white">
-              {/* <Image
-                src={product.image}
-                alt={product.name}
+              <Image
+                src={product.imageUrls?.[selectedImage] ?? "/placeholder.png"}
+                alt={product.name ?? "product"}
                 fill
                 className="object-cover"
-              /> */}
+              />
             </div>
             {/* Thumbnail Gallery */}
-            {/* <div className="flex gap-3">
-              {[product.image].map((img, idx) => (
+            <div className="flex gap-3">
+              {product.imageUrls?.map((url, idx) => (
                 <button
                   key={idx}
                   onClick={() => setSelectedImage(idx)}
-                  className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 ${
-                    selectedImage === idx ? 'border-primary' : 'border-transparent'
-                  }`}
+                  className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 ${selectedImage === idx ? 'border-primary' : 'border-transparent'
+                    }`}
                 >
-                  <Image src={img} alt={`${product.name} ${idx + 1}`} fill className="object-cover" />
+                  <Image src={url ?? "/placeholder.png"} alt={`${product.name} ${idx + 1}`} fill className="object-cover" />
                 </button>
               ))}
-            </div> */}
+            </div>
           </div>
 
           {/* Product Info */}

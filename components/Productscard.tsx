@@ -22,6 +22,8 @@ type Product = {
   name: string;
   category: string;
   price: number;
+  imageIds?: Id<"_storage">[];
+  imageUrls: string[];
   averageRating?: number;
   reviewCount?: number;
 };
@@ -181,11 +183,13 @@ export default function ProductCard({ product, index, isWishlisted }: ProductCar
         {/* Image Swap */}
         <div className="relative h-48 w-full bg-muted-section overflow-hidden">
           <img
-            // src={product.image}
+            src={product.imageUrls?.[0] ?? "/placeholder.png"}
+            alt={product.name}
             className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-0"
           />
           <img
-            // src={product.hoverImage}
+            src={product.imageUrls?.[1] ?? product.imageUrls?.[0] ?? "/placeholder.png"}
+            alt={product.name}
             className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
           />
         </div>

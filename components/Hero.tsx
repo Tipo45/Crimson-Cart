@@ -6,6 +6,9 @@ import Link from "next/link";
 import Heroimg from "../public/images/hero2.png";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 export default function Hero() {
   const router = useRouter();
@@ -17,7 +20,10 @@ export default function Hero() {
   const handleVendor = () => {
     router.push("/vendor/registration")
   }
-  
+
+  const { isSignedIn } = useUser();
+  const vendor = useQuery(api.user.getVendor);
+
   return (
     <section className="w-full px-4 tablet:px-8 xl:px-16 py-12">
       <div className="grid grid-cols-1 tablet:grid-cols-2 items-center gap-10">
@@ -27,7 +33,7 @@ export default function Hero() {
 
           {/* Top Links */}
           <div className="space-y-4">
-            
+
             {/* Logo */}
             <motion.h2
               initial={{ opacity: 0, y: -20 }}
@@ -107,7 +113,7 @@ export default function Hero() {
               className="flex gap-4 pt-2"
             >
               <motion.button
-              onClick={handleNext}
+                onClick={handleNext}
                 variants={{
                   hidden: { opacity: 0, scale: 0.8 },
                   visible: {
@@ -121,8 +127,8 @@ export default function Hero() {
                 Shop Now
               </motion.button>
 
-              <motion.button
-              onClick={handleVendor}
+              {isSignedIn && !vendor && (<motion.button
+                onClick={handleVendor}
                 variants={{
                   hidden: { opacity: 0, scale: 0.8 },
                   visible: {
@@ -134,7 +140,7 @@ export default function Hero() {
                 className="cursor-pointer border border-primary-button text-primary-button font-semibold rounded-lg px-6 py-3 hover:bg-primary-button hover:text-tertiary transition"
               >
                 Become a Vendor
-              </motion.button>
+              </motion.button>)}
             </motion.div>
           </div>
         </div>

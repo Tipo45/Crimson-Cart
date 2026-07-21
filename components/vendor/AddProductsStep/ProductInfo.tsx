@@ -208,6 +208,7 @@ export default function ProductInfoStep({ formData, setFormData, formErrors, set
                             id="paper-upload"
                             type="file"
                             accept="image/*"
+                            multiple
                             className="hidden"
                             onChange={handleFileChange}
                         />

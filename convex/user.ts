@@ -841,8 +841,18 @@ export const getProducts = query({
               0
             ) / reviewCount
             : 0;
+
+        const imageUrls = product.imageIds
+  ? (
+      await Promise.all(
+        product.imageIds.map((id) => ctx.storage.getUrl(id))
+      )
+    ).filter((url): url is string => url !== null)
+  : [];
+
         return {
           ...product,
+          imageUrls,
           averageRating,
           reviewCount,
         };
@@ -853,12 +863,33 @@ export const getProducts = query({
 
 // view product by vendor
 export const viewVendorProduct = query({
-  args: { vendorId: v.id("vendors") },
+  args: {
+    vendorId: v.id("vendors"),
+  },
   handler: async (ctx, args) => {
-    return await ctx.db
+    const products = await ctx.db
       .query("products")
       .withIndex("by_vendor", (q) => q.eq("vendorId", args.vendorId))
       .collect();
+
+    return await Promise.all(
+      products.map(async (product) => {
+        const imageUrls = product.imageIds
+          ? (
+            await Promise.all(
+              product.imageIds.map(async (id) => {
+                return await ctx.storage.getUrl(id);
+              })
+            )
+          ).filter((url): url is string => url !== null)
+          : [];
+
+        return {
+          ...product,
+          imageUrls,
+        };
+      })
+    );
   },
 });
 
@@ -878,7 +909,7 @@ export const addProduct = mutation({
     color: v.string(),
     size: v.string(),
     warranty: v.string(),
-    imageIds: v.optional(v.array(v.id("_storage"))),
+    imageIds: v.array(v.id("_storage")),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -938,25 +969,28 @@ export const generateUploadUrl = mutation(async (ctx) => {
   return await ctx.storage.generateUploadUrl();
 });
 
-// display image from storage
-export const getImageUrl = query({
-  args: {
-    imageId: v.id("_storage"),
-  },
-  handler: async (ctx, args) => {
-    return await ctx.storage.getUrl(args.imageId);
-  },
-});
-
 // get a single product by ID
 export const getProductById = query({
   args: {
     productId: v.id("products"),
   },
   handler: async (ctx, args) => {
-    // if (!args.productId) return null;
     const product = await ctx.db.get(args.productId);
-    return product;
+
+    if (!product) return null;
+
+    const imageUrls = product.imageIds
+  ? (
+      await Promise.all(
+        product.imageIds.map((id) => ctx.storage.getUrl(id))
+      )
+    ).filter((url): url is string => url !== null)
+  : [];
+
+    return {
+      ...product,
+      imageUrls,
+    };
   },
 });
 
@@ -983,10 +1017,28 @@ export const getProductsByCategory = query({
   handler: async (ctx, args) => {
     const products = await ctx.db
       .query("products")
-      .withIndex("by_category", (q) => q.eq("category", args.category))
+      .withIndex("by_category", (q) =>
+        q.eq("category", args.category)
+      )
       .collect();
 
-    return products;
+    return await Promise.all(
+      products.map(async (product) => {
+        const imageUrls = product.imageIds
+          ? await Promise.all(
+            product.imageIds.map(async (id) => {
+              const url = await ctx.storage.getUrl(id);
+              return url ?? "/placeholder.png";
+            })
+          )
+          : [];
+
+        return {
+          ...product,
+          imageUrls,
+        };
+      })
+    );
   },
 });
 

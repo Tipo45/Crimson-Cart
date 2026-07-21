@@ -7,6 +7,7 @@ import { FaPlus, FaTimes, FaTrash } from "react-icons/fa";
 import { LuLayoutGrid, LuList } from "react-icons/lu";
 import SettingSkeleton from "../skeletonui/user/SettingsSkeleton";
 import ProductForm from "./AddProductForm";
+import Image from "next/image";
 
 
 export default function SellerProducts() {
@@ -44,6 +45,7 @@ export default function SellerProducts() {
   const toggleShowForm = () => {
     setShowForm(true);
   };
+
 
   useEffect(() => {
   if (showForm) {
@@ -186,7 +188,13 @@ useEffect(() => {
                         </td>
 
                         <td className="p-4 flex items-center gap-3">
-                          <div className="w-12 h-12 bg-muted-section rounded-md" />
+                          <Image
+  src={product.imageUrls?.[0] || "/placeholder.png"}
+  alt={product.name}
+  width={80}
+  height={80}
+  className="w-12 h-12 rounded-md object-cover"
+/>
                           <span className="font-medium capitalize">
                             {product.name}
                           </span>
