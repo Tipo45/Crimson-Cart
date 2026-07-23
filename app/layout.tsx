@@ -1,11 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
-import Providers from "./providers";
 import { cn } from "@/lib/utils";
 import { ConvexClientProvider } from "@/providers/convex-client-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { ClerkProvider } from "@clerk/nextjs";
+import ServiceWorker from "@/components/ServiceWorker";
+import InstallPWA from "@/components/InstallPWA";
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -25,11 +26,19 @@ export const metadata: Metadata = {
     template: "%s | Crimson Cart"
   },
   description: "Crimson Cart is an e-commerce platform that offers a wide range of products at unbeatable prices.",
+  manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
     title: 'Crimson cart',
   },
+  icons: {
+  icon: [
+    { url: "/android-chrome-192x192.png", sizes: "192x192" },
+    { url: "/android-chrome-512x512.png", sizes: "512x512" },
+  ],
+  apple: "/apple-touch-icon.png",
+},
 };
 
 export const viewport: Viewport = {
@@ -50,6 +59,8 @@ export default function RootLayout({
 
         <body className="min-h-full flex flex-col">
           <ConvexClientProvider>
+            <ServiceWorker />
+            <InstallPWA />
             <Toaster position="top-center" />
             {children}
           </ConvexClientProvider>

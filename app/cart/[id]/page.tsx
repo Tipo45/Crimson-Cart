@@ -70,7 +70,6 @@ export default function Cart() {
   };
 
   const increaseQty = async (item: CartItem) => {
-    console.log("Increasing quantity for item:", item);
     try {
       await updateCartQuantity({
         cartItemId: item._id,

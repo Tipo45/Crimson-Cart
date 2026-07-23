@@ -55,7 +55,7 @@ export default function SellerSettings() {
             <div className="grid gap-4 tablet:grid-cols-2">
               <Input label="Bank Name" placeholder="Access Bank" />
               <Input label="Account Number" placeholder="0123456789" />
-              <Input label="Account Name" placeholder="Steven Azebi" />
+              <Input label="Account Name" placeholder="John Doe" />
               <Select
                 label="Payout Schedule"
                 options={["Daily", "Weekly", "Monthly"]}
@@ -97,22 +97,6 @@ export default function SellerSettings() {
           >
             <Toggle label="Email notifications for new orders" />
             <Toggle label="Marketing & announcements" />
-
-            <SaveButton />
-          </SettingsCard>
-
-
-          {/* ================= SECURITY ================= */}
-          <SettingsCard
-            icon={<FaLock />}
-            title="Security"
-            description="Manage your password and two-factor authentication."
-          >
-            <div className="space-y-4">
-              <Input label="Current Password" type="password" />
-              <Input label="New Password" type="password" />
-              <Toggle label="Enable Two-Factor Authentication (2FA)" />
-            </div>
 
             <SaveButton />
           </SettingsCard>
