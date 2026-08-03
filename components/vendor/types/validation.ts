@@ -1,7 +1,6 @@
 export const validateName = (name: string): string | null => {
     if (!name.trim()) return "Name is required";
     if (name.length < 3) return "Name must be at least 3 characters";
-    if (!/^[a-zA-Z\s\-]+$/.test(name)) return "Name should only contain letters and spaces";
     return null;
 };
 
@@ -14,7 +13,6 @@ export const validateCategory = (category: string): string | null => {
 export const validateShortDescription = (description: string): string | null => {
     if (!description.trim()) return "Required";
     if (description.length < 20) return "Must be at least 20 characters";
-    if (!/^[a-zA-Z\s\-]+$/.test(description)) return "should only contain letters and spaces";
     return null;
 };
 
@@ -38,7 +36,7 @@ export const validateWeight = (weight: string): string | null => {
 
 export const validateHeight = (height: string): string | null => {
     if (!height.trim()) return "Height is required";
-    if (isNaN(Number(height)) || Number(height) <= 0) return "Price must be a valid positive number";
+    if (isNaN(Number(height)) || Number(height) <= 0) return "Height must be a valid positive number";
     return null;
 };
 
@@ -60,7 +58,6 @@ export const validateImageUpload = (files: File[]) => {
     return "Please upload at least one product image.";
   }
 
-  // Optional: Limit number of images
   if (files.length > 10) {
     return "You can upload a maximum of 10 images.";
   }
