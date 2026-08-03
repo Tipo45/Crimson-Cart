@@ -67,7 +67,7 @@ export default defineSchema({
         name: v.string(),
         shortDescription: v.string(),
         price: v.number(),
-        discountPrice: v.optional(v.number()),
+        discountPrice: v.number(),
         quantity: v.number(),
         weight: v.string(),
         height: v.string(),

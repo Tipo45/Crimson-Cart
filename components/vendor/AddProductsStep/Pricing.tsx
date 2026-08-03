@@ -32,6 +32,10 @@ export default function PricingStep({ formData, setFormData, formErrors, setForm
         error = validatePrice(value) || "";
         break;
 
+      case "discountPrice":
+        error = validatePrice(value) || "";
+        break;
+
       case "quantity":
         error = validateQuantity(value) || "";
         break;

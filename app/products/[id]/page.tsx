@@ -36,7 +36,7 @@ export default function ProductDetails() {
     useState<Id<"products"> | null>(null);
   const [wishlistLoading, setWishlistLoading] =
     useState<Id<"products"> | null>(null);
-  const vendor = useQuery(api.user.getVendor);
+  // const vendor = useQuery(api.user.getVendor);
 
   const [selectedImage, setSelectedImage] = useState(0);
 
@@ -136,6 +136,8 @@ export default function ProductDetails() {
       toast.error("Failed to update quantity");
     }
   };
+
+  console.log(product);
 
   const handleDecreaseQty = async () => {
     if (!cartItem) return;
@@ -248,8 +250,24 @@ export default function ProductDetails() {
                 <span className="text-secondary-text">
                   Sold by:
                   <span className="font-semibold text-secondary ml-1 capitalize">
-                    {vendor?.businessName}
+                    {product.vendor?.businessName}
                   </span>
+                </span>
+              </div>
+            </div>
+
+            <div className="bg-tertiary rounded-xl p-4 border border-border">
+              <div className="flex items-center gap-3">
+                <span className="text-4xl font-bold text-secondary">
+                  ₦{product?.discountPrice.toLocaleString()}
+                </span>
+
+                <span className="text-lg text-secondary-text line-through">
+                  ₦{product.price.toLocaleString()}
+                </span>
+
+                <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">
+                  Save {Math.round(((product?.price - product?.discountPrice) / (product?.price)) * 100)}%
                 </span>
               </div>
             </div>
@@ -257,22 +275,6 @@ export default function ProductDetails() {
             <p className="text-gray-600 dark:text-muted-gray leading-relaxed">
               {product.shortDescription}
             </p>
-
-            <div className="bg-tertiary rounded-xl p-4 border border-border">
-              <div className="flex items-center gap-3">
-                <span className="text-4xl font-bold text-secondary">
-                  ₦{product.price.toLocaleString()}
-                </span>
-
-                <span className="text-lg text-secondary-text line-through">
-                  ₦{(product.price * 1.5).toLocaleString()}
-                </span>
-
-                <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">
-                  Save {Math.round(((product.price * 1.5 - product.price) / (product.price * 1.5)) * 100)}%
-                </span>
-              </div>
-            </div>
 
             <div className="bg-tertiary border border-border rounded-xl p-4">
               <h3 className="font-semibold text-primary-text mb-3">
@@ -282,7 +284,7 @@ export default function ProductDetails() {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-secondary-text">Vendor</span>
-                  <span className="font-medium capitalize">{vendor?.businessName}</span>
+                  <span className="font-medium capitalize">{product.vendor?.businessName}</span>
                 </div>
 
                 <div className="flex justify-between">

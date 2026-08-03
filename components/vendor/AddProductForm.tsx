@@ -2,7 +2,7 @@ import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
 import { useState } from "react"
 import { toast } from "sonner";
-import { validateCategory, validateHeight, validateImageUpload, validateName, validatePrice, validateQuantity, validateShortDescription, validateSize, validatetColor, validateWeight } from "./types/validation";
+import { validateCategory, validateImageUpload, validateLength, validateName, validatePrice, validateQuantity, validateShortDescription, validateSize, validatetColor, validateWeight } from "./types/validation";
 import { Id } from "@/convex/_generated/dataModel";
 import { MdOutlineEventNote } from "react-icons/md";
 import { CiSaveDown1 } from "react-icons/ci";
@@ -105,9 +105,8 @@ export default function ProductForm({ setShowForm }: Props) {
   const isSpecificationsFormValid = () => {
     return (
       !validateWeight(formData.weight) &&
-      !validateHeight(formData.height) &&
-      !validatetColor(formData.color) &&
-      !validateSize(formData.size)
+      !validateLength(formData.length) &&
+      !validatetColor(formData.color)
     );
   };
 

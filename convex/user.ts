@@ -843,18 +843,25 @@ export const getProducts = query({
             : 0;
 
         const imageUrls = product.imageIds
-  ? (
-      await Promise.all(
-        product.imageIds.map((id) => ctx.storage.getUrl(id))
-      )
-    ).filter((url): url is string => url !== null)
-  : [];
+          ? (
+            await Promise.all(
+              product.imageIds.map((id) => ctx.storage.getUrl(id))
+            )
+          ).filter((url): url is string => url !== null)
+          : [];
+
+        const vendor = await ctx.db.get(product.vendorId);
 
         return {
           ...product,
           imageUrls,
           averageRating,
           reviewCount,
+          vendor: vendor
+            ? {
+              businessName: vendor.businessName,
+            }
+            : null,
         };
       })
     );
@@ -980,16 +987,19 @@ export const getProductById = query({
     if (!product) return null;
 
     const imageUrls = product.imageIds
-  ? (
-      await Promise.all(
-        product.imageIds.map((id) => ctx.storage.getUrl(id))
-      )
-    ).filter((url): url is string => url !== null)
-  : [];
+      ? (
+        await Promise.all(
+          product.imageIds.map((id) => ctx.storage.getUrl(id))
+        )
+      ).filter((url): url is string => url !== null)
+      : [];
+
+    const vendor = await ctx.db.get(product.vendorId);
 
     return {
       ...product,
       imageUrls,
+      vendor,
     };
   },
 });

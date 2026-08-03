@@ -246,7 +246,7 @@ export default function Registration() {
                             type="text"
                             value={formData.cacNumber}
                             onChange={(e) => handleChange("cacNumber", e.target.value)}
-                            placeholder="Enter registered CAC number"
+                            placeholder="e.g BN 123456"
                             required
                             className={`w-full rounded-lg px-4 py-3 border bg-white outline-none focus:ring-2 focus:ring-secondary-button transition ${touched.cacNumber && errors.cacNumber ? "border-red-500 focus:ring-red-500" : touched.cacNumber && !errors.cacNumber && formData.cacNumber ? "border-green-500 focus:ring-green-500" : "border-input-border"}`}
                         />

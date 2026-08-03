@@ -271,11 +271,11 @@ export default function Bestdeals() {
                           className="mb-2 flex items-center gap-3"
                         >
                           <span className="text-sm font-medium text-secondary/60 line-through">
-                            ₦ {Number(item.price * 1.5).toLocaleString()}
+                            ₦ {Number(item.price).toLocaleString()}
                           </span>
 
                           <span className="text-md font-bold text-secondary">
-                            ₦ {Number(item.price).toLocaleString()}
+                            ₦ {Number(item.discountPrice).toLocaleString()}
                           </span></motion.div>
                         {/* </div> */}
 

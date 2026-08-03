@@ -34,9 +34,9 @@ export const validateWeight = (weight: string): string | null => {
     return null;
 };
 
-export const validateHeight = (height: string): string | null => {
-    if (!height.trim()) return "Height is required";
-    if (isNaN(Number(height)) || Number(height) <= 0) return "Height must be a valid positive number";
+export const validateLength = (length: string): string | null => {
+    if (!length.trim()) return "Length is required";
+    if (isNaN(Number(length)) || Number(length) <= 0) return "Length must be a valid positive number";
     return null;
 };
 
