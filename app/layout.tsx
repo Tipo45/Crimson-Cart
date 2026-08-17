@@ -7,6 +7,9 @@ import { Toaster } from "@/components/ui/sonner";
 import { ClerkProvider } from "@clerk/nextjs";
 import ServiceWorker from "@/components/ServiceWorker";
 import InstallPWA from "@/components/InstallPWA";
+import BottomNav from "@/components/BottomNav";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -62,7 +65,16 @@ export default function RootLayout({
             <ServiceWorker />
             <InstallPWA />
             <Toaster position="top-center" />
+            <div className="block pwa:hidden">
+              <Navbar />
+            </div>
             {children}
+            <div className="hidden pwa:block">
+              <BottomNav />
+            </div>
+            <div className="block pwa:hidden">
+              <Footer />
+            </div>
           </ConvexClientProvider>
         </body>
       </html>

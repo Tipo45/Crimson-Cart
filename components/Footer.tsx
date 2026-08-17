@@ -1,3 +1,5 @@
+"use client"
+
 import {
   FaFacebook,
   FaInstagram,
@@ -8,7 +10,6 @@ import { motion } from "framer-motion";
 
 export default function Footer() {
   return (
-    // <footer id="footer" className="relative z-0 w-full bg-secondary text-primary">
     <motion.footer
       initial={{ opacity: 0, y: 100 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -139,6 +140,5 @@ export default function Footer() {
 
       </div>
     </motion.footer>
-    // </footer>
   );
 }

@@ -3,7 +3,7 @@ import { FaShoppingCart } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import { motion, removeItem } from "framer-motion";
-import Providers from "@/app/providers";
+import Providers from "@/components/providers";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";

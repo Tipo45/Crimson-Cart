@@ -631,6 +631,18 @@ export const getCart = query({
 
         if (!product) return null;
 
+         const imageUrls = product?.imageIds
+          ? (
+              await Promise.all(
+                product.imageIds.map((id) =>
+                  ctx.storage.getUrl(id)
+                )
+              )
+            ).filter(
+              (url): url is string => url !== null
+            )
+          : [];
+
         return {
           _id: cartItem._id,
           productId: product._id,
@@ -638,6 +650,7 @@ export const getCart = query({
           price: product.price,
           quantity: cartItem.quantity,
           category: product.category,
+          imageUrls,
         };
       })
     ).then((items) => items.filter(Boolean));

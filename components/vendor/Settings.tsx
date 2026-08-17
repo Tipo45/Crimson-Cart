@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { FaStore, FaMoneyBillWave, FaTruck, FaBell, FaLock, FaSignOutAlt } from "react-icons/fa";
 import SettingSkeleton from "../skeletonui/user/SettingsSkeleton";
-import Providers from "@/app/providers";
+import Providers from "@/components/providers";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { SignOutButton } from "@clerk/nextjs";

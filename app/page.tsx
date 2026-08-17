@@ -5,9 +5,7 @@ import Bestdeals from "@/components/Bestdeals";
 import Deals from "@/components/Deals";
 import FAQs from "@/components/FAQs";
 import FloatingCart from "@/components/Floatingcart";
-import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
-import Navbar from "@/components/Navbar";
 import Newsletter from "@/components/Newsletter";
 import Popularcategories from "@/components/Popularcategories";
 import Promo from "@/components/Promo";
@@ -17,7 +15,7 @@ import { toast } from "sonner";
 import { useUser } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import Vendoralert from "@/components/Vendoralert";
+import Vendoralert from "@/components/vendor/Vendoralert";
 
 export default function Home() {
   const { scrollYProgress } = useScroll();
@@ -44,13 +42,14 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-primary font-sans dark:bg-black">
-      <Navbar />
-
-      <FloatingCart />
+      
+      <div className="pwa:hidden">
+        <FloatingCart />
+      </div>
 
       <div className="relative">
         {/* MAIN CONTENT */}
-        <main className="relative z-10 bg-primary pt-20 px-6 lg:px-10">
+        <main className="relative z-10 bg-primary pt-20 pwa:pt-0 px-6 lg:px-10">
           <motion.div
             style={{
               scale: useTransform(scrollYProgress, [0.8, 1], [1, 0.95]),
@@ -68,7 +67,6 @@ export default function Home() {
         </main>
       </div>
 
-      <Footer />
     </div>
   );
 }
