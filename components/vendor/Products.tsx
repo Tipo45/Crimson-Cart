@@ -456,7 +456,7 @@ export default function SellerProducts() {
 
             {/* ================= GRID VIEW ================= */}
             {(view === "grid" || window.innerWidth < 768) && (
-              <div className="grid grid-cols-1 gap-6 tablet:grid-cols-2 xl:grid-cols-3">
+              <div className="grid grid-cols-1 gap-6 mb-14 tablet:grid-cols-2 xl:grid-cols-3">
                 {filteredProducts.map((product) => (
                   <div
                     key={product._id}
