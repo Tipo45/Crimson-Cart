@@ -13,7 +13,7 @@ import { useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useUser } from "@clerk/nextjs";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Vendoralert from "@/components/vendor/Vendoralert";
 
@@ -22,6 +22,7 @@ export default function Home() {
    const storeUser = useMutation(api.user.store);
   const searchParams = useSearchParams();
   const { isSignedIn, isLoaded } = useUser();
+  const vendor = useQuery(api.user.getVendor);
     
     useEffect(() => {
     if (isLoaded && isSignedIn) {
@@ -43,9 +44,9 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-primary font-sans dark:bg-black">
       
-      <div className="pwa:hidden">
+      {!vendor ? (<div className="pwa:hidden">
         <FloatingCart />
-      </div>
+      </div>) : (null)}
 
       <div className="relative">
         {/* MAIN CONTENT */}

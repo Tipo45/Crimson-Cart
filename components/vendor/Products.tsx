@@ -48,18 +48,18 @@ export default function SellerProducts() {
 
 
   useEffect(() => {
-  if (showForm) {
-    document.body.style.overflow = "hidden";
-  } else {
-    document.body.style.overflow = "auto";
-  }
+    if (showForm) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
 
-  return () => {
-    document.body.style.overflow = "auto";
-  };
-}, [showForm]);
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [showForm]);
 
-useEffect(() => {
+  useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
@@ -161,7 +161,8 @@ useEffect(() => {
             )}
 
             {/* ===== TABLE VIEW ===== */}
-            {view === "table" && (
+            <div className="pwa:hidden">
+              {view === "table" && (
               <div className="bg-tertiary border border-border rounded-xl overflow-hidden">
                 <table className="w-full text-sm">
                   <thead className="bg-muted-section text-secondary-text">
@@ -189,12 +190,12 @@ useEffect(() => {
 
                         <td className="p-4 flex items-center gap-3">
                           <Image
-  src={product.imageUrls?.[0] || "/placeholder.png"}
-  alt={product.name}
-  width={80}
-  height={80}
-  className="w-12 h-12 rounded-md object-cover"
-/>
+                            src={product.imageUrls?.[0] || "/placeholder.png"}
+                            alt={product.name}
+                            width={80}
+                            height={80}
+                            className="w-12 h-12 rounded-md object-cover"
+                          />
                           <span className="font-medium capitalize">
                             {product.name}
                           </span>
@@ -226,16 +227,24 @@ useEffect(() => {
                 </table>
               </div>
             )}
+            </div>
 
             {/* ===== GRID VIEW ===== */}
-            {view === "grid" && (
+            <div className="pwa:flex">
+              {view === "grid" && (
               <div className="grid grid-cols-1 tablet:grid-cols-2 xl:grid-cols-3 gap-6">
                 {filteredProducts?.map((product) => (
                   <div
                     key={product?._id}
                     className="bg-tertiary border border-border rounded-xl p-4"
                   >
-                    <div className="w-full h-40 bg-muted-section rounded-lg mb-4" />
+                    <Image
+                      src={product.imageUrls?.[0] || "/placeholder.png"}
+                      alt={product.name}
+                      width={80}
+                      height={80}
+                      className="w-5xl rounded-xl mb-4 object-cover"
+                    />
 
                     <h3 className="font-semibold text-primart-text mb-1 capitalize">
                       {product.name}
@@ -262,6 +271,7 @@ useEffect(() => {
                 ))}
               </div>
             )}
+            </div>
           </div>
         </div>)}
     </div>

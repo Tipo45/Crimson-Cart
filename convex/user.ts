@@ -596,6 +596,18 @@ export const addToCart = mutation({
       throw new Error("User not found");
     }
 
+    // Check whether user is a vendor
+    const vendor = await ctx.db
+      .query("vendors")
+      .withIndex("by_user", (q) =>
+        q.eq("userId", user._id)
+      )
+      .unique();
+
+    if (vendor) {
+      throw new Error("Vendors cannot add products to cart");
+    }
+
     const existingCartItem = await ctx.db
       .query("cart")
       .withIndex("by_user_product", (q) =>

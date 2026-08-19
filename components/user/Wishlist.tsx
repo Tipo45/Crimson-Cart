@@ -246,7 +246,7 @@ function WishlistCard({ item, cartItem, onAddToCart, cartLoading, isInCart }: Wi
                             }}
                             className="flex-1 flex items-center justify-center gap-1 lg:gap-2 px-2 lg:px-3 py-1.5 lg:py-2 text-xs lg:text-sm rounded-lg bg-primary-button text-tertiary hover:bg-primary-button-hover transition disabled:opacity-50"
                         >
-                            <FaShoppingCart size={12} className="lg:size-14" />
+                            <FaShoppingCart size={12} className="lg:size-6" />
                             {cartLoading === item.product?._id ? "Adding..." : "Add"}
                         </button>
                     )}
@@ -255,7 +255,7 @@ function WishlistCard({ item, cartItem, onAddToCart, cartLoading, isInCart }: Wi
                         onClick={() => removeItem()}
                         className="flex items-center justify-center px-2 lg:px-3 py-1.5 lg:py-2 rounded-lg border border-secondary-button-border bg-secondary-button text-secondary-button-text hover:bg-secondary-button-hover transition"
                     >
-                        <FaTrash size={12} className="lg:size-14" />
+                        <FaTrash size={12} className="lg:size-6" />
                     </button>
                 </div>
             </div>

@@ -38,6 +38,7 @@ export default function Bestdeals() {
   const [quantities, setQuantities] = React.useState<Record<number, number>>({});
   const [ripples, setRipples] = React.useState<Record<number, number>>({});
   const items = useQuery(api.user.getProducts);
+  const vendor = useQuery(api.user.getVendor);
   const addToCart = useMutation(api.user.addToCart);
   const updateCartQuantity = useMutation(api.user.updateCartQuantity);
   const plugin = React.useRef(
@@ -121,42 +122,42 @@ export default function Bestdeals() {
   };
 
   const handleIncreaseQty = async (
-  cartItem: CartItem
-) => {
-      if (!cartItem) return;
-  
-      try {
-        await updateCartQuantity({
-          cartItemId: cartItem._id,
-          quantity: cartItem.quantity + 1,
-        });
-  
-        toast.success("Quantity updated");
-      } catch {
-        toast.error("Failed to update quantity");
-      }
-    };
-  
-    const handleDecreaseQty = async (
-  cartItem: CartItem
-) => {
-      if (!cartItem) return;
-  
-      if (cartItem.quantity <= 1) {
-        return;
-      }
-  
-      try {
-        await updateCartQuantity({
-          cartItemId: cartItem._id,
-          quantity: cartItem.quantity - 1,
-        });
-  
-        toast.success("Quantity updated");
-      } catch {
-        toast.error("Failed to update quantity");
-      }
-    };
+    cartItem: CartItem
+  ) => {
+    if (!cartItem) return;
+
+    try {
+      await updateCartQuantity({
+        cartItemId: cartItem._id,
+        quantity: cartItem.quantity + 1,
+      });
+
+      toast.success("Quantity updated");
+    } catch {
+      toast.error("Failed to update quantity");
+    }
+  };
+
+  const handleDecreaseQty = async (
+    cartItem: CartItem
+  ) => {
+    if (!cartItem) return;
+
+    if (cartItem.quantity <= 1) {
+      return;
+    }
+
+    try {
+      await updateCartQuantity({
+        cartItemId: cartItem._id,
+        quantity: cartItem.quantity - 1,
+      });
+
+      toast.success("Quantity updated");
+    } catch {
+      toast.error("Failed to update quantity");
+    }
+  };
 
   if (items === undefined) {
     return (
@@ -207,14 +208,14 @@ export default function Bestdeals() {
           <CarouselContent className="-ml-4">
 
             {items.map((item, index) => {
-  const currentCartItem = cartItems?.find(
-    (cart) => cart.productId === item._id
-  );
+              const currentCartItem = cartItems?.find(
+                (cart) => cart.productId === item._id
+              );
 
-  return (
-              <motion.div key={item._id} variants={cardVariants}              >
-                <CarouselItem
-                  className="
+              return (
+                <motion.div key={item._id} variants={cardVariants}              >
+                  <CarouselItem
+                    className="
                 pl-4
                 basis-[85%]
                 lg:basis-[40%]
@@ -222,126 +223,130 @@ export default function Bestdeals() {
                 2xl:basis-1/4
                 3xl:basis-1/5
               "
-                >
-                  <motion.div
-                    whileHover={{
-                      y: -8,
-                      scale: 1.02,
-                    }}
-                    transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                  ><Card className="h-full">
-                      <CardContent
-                        className="
+                  >
+                    <motion.div
+                      whileHover={{
+                        y: -8,
+                        scale: 1.02,
+                      }}
+                      transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                    ><Card className="h-full">
+                        <CardContent
+                          className="
       flex h-80 flex-col
       rounded-lg border border-secondary-button-hover
       bg-tertiary p-6
     "
-                      >
-                        {/* Image */}
-                        {/* <div className="relative h-40 w-full mb-4"> */}
-                        <motion.div
-                          whileHover={{ scale: 1.08 }}
-                          transition={{ duration: 0.4 }}
-                          className="relative h-40 w-full mb-4 overflow-hidden rounded-lg"
                         >
-                          <Image
-                            src={item.imageUrls?.[0] ?? "/placeholder.png"}
-                            alt={item.name}
-                            fill
-                            sizes="100vw"
-                            style={{ objectFit: "cover" }}
-                            className="rounded-lg"
-                          />
-                          
-                        </motion.div>
-                        {/* </div> */}
+                          {/* Image */}
+                          {/* <div className="relative h-40 w-full mb-4"> */}
+                          <motion.div
+                            whileHover={{ scale: 1.08 }}
+                            transition={{ duration: 0.4 }}
+                            className="relative h-40 w-full mb-4 overflow-hidden rounded-lg"
+                          >
+                            <Image
+                              src={item.imageUrls?.[0] ?? "/placeholder.png"}
+                              alt={item.name}
+                              fill
+                              sizes="100vw"
+                              style={{ objectFit: "cover" }}
+                              className="rounded-lg"
+                            />
 
-                        {/* Push pricing & footer down */}
-                        <div className="flex-1" />
-                        <p className="text-md font-bold text-secondary capitalize">
-                          {item.name}
-                        </p>
+                          </motion.div>
+                          {/* </div> */}
 
-                        {/* Price */}
-                        {/* <div className="mb-2 flex items-center gap-3"> */}
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.2 }}
-                          className="mb-2 flex items-center gap-3"
-                        >
-                          <span className="text-sm font-medium text-secondary/60 line-through">
-                            ₦ {Number(item.price).toLocaleString()}
-                          </span>
+                          {/* Push pricing & footer down */}
+                          <div className="flex-1" />
+                          <p className="text-md font-bold text-secondary capitalize">
+                            {item.name}
+                          </p>
 
-                          <span className="text-md font-bold text-secondary">
-                            ₦ {Number(item.discountPrice).toLocaleString()}
-                          </span></motion.div>
-                        {/* </div> */}
+                          {/* Price */}
+                          {/* <div className="mb-2 flex items-center gap-3"> */}
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                            className="mb-2 flex items-center gap-3"
+                          >
+                            <span className="text-sm font-medium text-secondary/60 line-through">
+                              ₦ {Number(item.price).toLocaleString()}
+                            </span>
 
-                        {/* Footer */}
-                        <CardFooter className="flex flex-col px-0 pb-0">
-                          {/* Quantity selector */}
-                          {currentCartItem ? (<div className="flex items-center justify-center gap-4 py-4">
-                
+                            <span className="text-md font-bold text-secondary">
+                              ₦ {Number(item.discountPrice).toLocaleString()}
+                            </span></motion.div>
+                          {/* </div> */}
 
-                  <div className="flex items-center rounded-lg overflow-hidden border border-border">
-                    <button
-                      onClick={() => handleDecreaseQty(currentCartItem)}
-                      disabled={currentCartItem.quantity === 1}
-                      className={`px-2 py-3 hover:bg-muted-section ${currentCartItem.quantity === 1 ? "text-gray-400 cursor-not-allowed"
-                        : "text-secondary hover:bg-primary"}`}
-                    >
-                      −
-                    </button>
+                          {/* Footer */}
+                          <CardFooter className="flex flex-col px-0 pb-0">
+                            {/* Quantity selector */}
+                            {!vendor && (<>
+                              {currentCartItem ? (
+                                <div className="flex items-center justify-center gap-4 py-4">
 
-                    <span className="px-6 font-semibold">
-                      {currentCartItem.quantity}
-                    </span>
 
-                    <button
-                      onClick={() => handleIncreaseQty(currentCartItem)}
-                      className="px-2 py-3 text-secondary hover:bg-muted-section"
-                    >
-                      +
-                    </button>
-                  </div>
-              </div>) :(<div><div className="flex items-center justify-center gap-4 py-4">
-                            <motion.button
-                              whileTap={quantities[index] > 1 ? { scale: 0.9 } : undefined}
-                              disabled={(quantities[index] || 1) === 1}
-                              onClick={() => decreaseQty(index)}
-                              className={`
+                                  <div className="flex items-center rounded-lg overflow-hidden border border-border">
+                                    <button
+                                      onClick={() => handleDecreaseQty(currentCartItem)}
+                                      disabled={currentCartItem.quantity === 1}
+                                      className={`px-2 py-3 hover:bg-muted-section ${currentCartItem.quantity === 1 ? "text-gray-400 cursor-not-allowed"
+                                        : "text-secondary hover:bg-primary"}`}
+                                    >
+                                      −
+                                    </button>
+
+                                    <span className="px-6 font-semibold">
+                                      {currentCartItem.quantity}
+                                    </span>
+
+                                    <button
+                                      onClick={() => handleIncreaseQty(currentCartItem)}
+                                      className="px-2 py-3 text-secondary hover:bg-muted-section"
+                                    >
+                                      +
+                                    </button>
+                                  </div>
+                                </div>) : (
+                                <div>
+                                  <div className="flex items-center justify-center gap-4 py-4">
+                                    <motion.button
+                                      whileTap={quantities[index] > 1 ? { scale: 0.9 } : undefined}
+                                      disabled={(quantities[index] || 1) === 1}
+                                      onClick={() => decreaseQty(index)}
+                                      className={`
             flex h-8 w-8 items-center justify-center rounded-full
             border border-secondary-button-hover
             text-secondary transition
             ${(quantities[index] || 1) === 1
-                                  ? "opacity-40 cursor-not-allowed"
-                                  : "hover:bg-secondary/10"}
+                                          ? "opacity-40 cursor-not-allowed"
+                                          : "hover:bg-secondary/10"}
           `}
-                            >
-                              −
-                            </motion.button>
+                                    >
+                                      −
+                                    </motion.button>
 
-                            <span className="min-w-6 text-center text-sm font-semibold text-secondary">
-                              {quantities[index] || 1}
-                            </span>
+                                    <span className="min-w-6 text-center text-sm font-semibold text-secondary">
+                                      {quantities[index] || 1}
+                                    </span>
 
-                            <motion.button
-                              whileTap={{ scale: 0.9 }}
-                              onClick={() => increaseQty(index)}
-                              className="flex h-8 w-8 items-center justify-center rounded-full border border-secondary-button-hover text-secondary hover:bg-secondary/10"
-                            >
-                              +
-                            </motion.button>
-                          </div>
+                                    <motion.button
+                                      whileTap={{ scale: 0.9 }}
+                                      onClick={() => increaseQty(index)}
+                                      className="flex h-8 w-8 items-center justify-center rounded-full border border-secondary-button-hover text-secondary hover:bg-secondary/10"
+                                    >
+                                      +
+                                    </motion.button>
+                                  </div>
 
-                          <motion.button
-                            disabled={loadingProduct === item._id}
-                            whileHover={{ y: -2, scale: 1.03 }}
-                            whileTap={{ scale: 0.95 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                            className="relative 
+                                  <motion.button
+                                    disabled={loadingProduct === item._id}
+                                    whileHover={{ y: -2, scale: 1.03 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                                    className="relative 
           w-full rounded-md
           bg-primary-button
           py-3 text-sm font-semibold
@@ -350,37 +355,40 @@ export default function Bestdeals() {
           focus:outline-none focus:ring-2 focus:ring-secondary/40
         disabled:opacity-50 cursor-pointer
     disabled:cursor-not-allowed"  onClick={() => {
-                              triggerRipple(index);
+                                      triggerRipple(index);
 
-                              toCart(
-                                item._id,
-                                quantities[index] || 1
-                              );
-                            }}
-                          >
-                            {loadingProduct === item._id
-                              ? "Adding..."
-                              : "Add to Cart"}
-                            {ripples[index] && (
-                              <motion.span
-                                key={ripples[index]}
-                                initial={{ scale: 0, opacity: 0.6 }}
-                                animate={{ scale: 4, opacity: 0 }}
-                                transition={{ duration: 0.6, ease: "easeOut" }}
-                                className="absolute inset-0 rounded-md bg-white/40"
-                              />
-                            )}
-                          </motion.button></div>)}
+                                      toCart(
+                                        item._id,
+                                        quantities[index] || 1
+                                      );
+                                    }}
+                                  >
+                                    {loadingProduct === item._id
+                                      ? "Adding..."
+                                      : "Add to Cart"}
+                                    {ripples[index] && (
+                                      <motion.span
+                                        key={ripples[index]}
+                                        initial={{ scale: 0, opacity: 0.6 }}
+                                        animate={{ scale: 4, opacity: 0 }}
+                                        transition={{ duration: 0.6, ease: "easeOut" }}
+                                        className="absolute inset-0 rounded-md bg-white/40"
+                                      />
+                                    )}
+                                  </motion.button>
+                                </div>
+                              )}
+                            </>)}
 
-                        </CardFooter>
-                      </CardContent>
-                    </Card></motion.div>
+                          </CardFooter>
+                        </CardContent>
+                      </Card></motion.div>
 
 
-                </CarouselItem>
-              </motion.div>
-            )
-})}
+                  </CarouselItem>
+                </motion.div>
+              )
+            })}
 
           </CarouselContent>
         </motion.div>

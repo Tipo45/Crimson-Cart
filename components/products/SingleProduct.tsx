@@ -30,6 +30,7 @@ export default function ProductDetails() {
 
     const router = useRouter();
     const { isSignedIn } = useUser();
+    const vendor = useQuery(api.user.getVendor);
     const params = useParams();
     const { redirectToSignIn } = useClerk();
     const [cartLoading, setCartLoading] =
@@ -136,8 +137,6 @@ export default function ProductDetails() {
         }
     };
 
-    console.log(product);
-
     const handleDecreaseQty = async () => {
         if (!cartItem) return;
 
@@ -200,6 +199,7 @@ export default function ProductDetails() {
                             <Image
                                 src={product.imageUrls?.[selectedImage] ?? "/placeholder.png"}
                                 alt={product.name ?? "product"}
+                                sizes="100vw"
                                 fill
                                 className="object-cover"
                             />
@@ -213,7 +213,7 @@ export default function ProductDetails() {
                                     className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 ${selectedImage === idx ? 'border-primary' : 'border-transparent'
                                         }`}
                                 >
-                                    <Image src={url ?? "/placeholder.png"} alt={`${product.name} ${idx + 1}`} fill className="object-cover" />
+                                    <Image src={url ?? "/placeholder.png"} alt={`${product.name} ${idx + 1}`} fill sizes="80vw" className="object-cover" />
                                 </button>
                             ))}
                         </div>
@@ -308,7 +308,7 @@ export default function ProductDetails() {
                         )}
 
                         {/* Action Buttons */}
-                        <div className="flex gap-4 pt-4">
+                        {!vendor && (<div className="flex gap-4 pt-4">
                             {cartItem ? (<div className="p-4">
                                 <div className="bg-tertiary flex items-center justify-between ">
 
@@ -360,7 +360,7 @@ export default function ProductDetails() {
                                     <FaHeart size={18} className="text-gray-500 hover:text-yellow-400" />
                                 )}
                             </motion.button></div>
-                        </div>
+                        </div>)}
 
                         <div className="border-t border-border pt-6 mt-8">
                             <h2 className="text-xl font-semibold mb-4">

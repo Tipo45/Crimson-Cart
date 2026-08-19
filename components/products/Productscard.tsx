@@ -60,7 +60,7 @@ export default function ProductCard({ product, index, isWishlisted }: ProductCar
   const toggleWishlist = useMutation(api.user.toggleWishlist);
   const [ripples, setRipples] = React.useState<Record<number, number>>({});
   const cartItems = useQuery(api.user.getCart) as CartItem[] | null | undefined;
-
+  const vendor = useQuery(api.user.getVendor);
   const cartItem = cartItems?.find(item => item.productId === product._id);
   const isInCart = !!cartItem;
   const cartQuantity = cartItem?.quantity || 0;
@@ -225,7 +225,8 @@ export default function ProductCard({ product, index, isWishlisted }: ProductCar
       </div>
 
       {/* Actions */}
-      <div className="flex gap-1 pt-2 p-2">
+      { !vendor &&
+        (<div className="flex gap-1 pt-2 p-2">
         {isInCart ? (
           // Show quantity controls if product is in cart
           <div className="flex-1 flex items-center justify-between border rounded-lg overflow-hidden bg-white">
@@ -302,7 +303,8 @@ export default function ProductCard({ product, index, isWishlisted }: ProductCar
             <FaRegHeart />
           )}
         </button>
-      </div>
+      </div>)
+      }
 
     </div>
   );
