@@ -516,9 +516,31 @@ export const getWishlist = query({
       wishlistItems.map(async (item) => {
         const product = await ctx.db.get(item.productId);
 
+        if (!product) {
+          return {
+            ...item,
+            product: null,
+          };
+        }
+
+        const imageUrls = product.imageIds
+          ? (
+              await Promise.all(
+                product.imageIds.map((id) =>
+                  ctx.storage.getUrl(id)
+                )
+              )
+            ).filter(
+              (url): url is string => url !== null
+            )
+          : [];
+
         return {
           ...item,
-          product,
+          product: {
+            ...product,
+            imageUrls,
+          },
         };
       })
     );
@@ -625,35 +647,39 @@ export const getCart = query({
       )
       .collect();
 
-    return await Promise.all(
-      cartItems.map(async (cartItem) => {
+    const items = await Promise.all(
+    cartItems.map(async (cartItem) => {
         const product = await ctx.db.get(cartItem.productId);
 
         if (!product) return null;
 
-         const imageUrls = product?.imageIds
-          ? (
-              await Promise.all(
-                product.imageIds.map((id) =>
-                  ctx.storage.getUrl(id)
+        const imageUrls = product.imageIds
+            ? (
+                await Promise.all(
+                    product.imageIds.map((id) =>
+                        ctx.storage.getUrl(id)
+                    )
                 )
-              )
             ).filter(
-              (url): url is string => url !== null
+                (url): url is string => url !== null
             )
-          : [];
+            : [];
 
         return {
-          _id: cartItem._id,
-          productId: product._id,
-          name: product.name,
-          price: product.price,
-          quantity: cartItem.quantity,
-          category: product.category,
-          imageUrls,
+            _id: cartItem._id,
+            productId: product._id,
+            name: product.name,
+            price: product.price,
+            quantity: cartItem.quantity,
+            category: product.category,
+            imageUrls,
         };
-      })
-    ).then((items) => items.filter(Boolean));
+    })
+);
+
+return items.filter(
+    (item): item is NonNullable<typeof item> => item !== null
+);
   },
 });
 

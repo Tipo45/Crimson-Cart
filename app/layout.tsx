@@ -65,11 +65,11 @@ export default function RootLayout({
             <ServiceWorker />
             <InstallPWA />
             <Toaster position="top-center" />
-            <div className="block pwa:hidden">
+            <div className="flex pwa:hidden">
               <Navbar />
             </div>
             {children}
-            <div className="hidden pwa:block">
+            <div className="hidden pwa:flex">
               <BottomNav />
             </div>
             <div className="block pwa:hidden">

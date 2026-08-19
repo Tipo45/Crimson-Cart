@@ -2,8 +2,7 @@ import Image from "next/image";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa6";
 import { useEffect, useState } from "react";
-import { motion, removeItem } from "framer-motion";
-import Providers from "@/components/providers";
+import { motion } from "framer-motion";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
@@ -14,7 +13,8 @@ type Product = {
     _id: Id<"products">;
     name: string;
     price: number;
-    // image: string;  
+    category: string;
+    imageUrls: string[];
 }
 
 type WishlistItem = {
@@ -36,13 +36,14 @@ export default function Wishlist() {
     const addToCart = useMutation(api.user.addToCart);
     const cartItems = useQuery(api.user.getCart) ?? [];
 
-    const validCartItems = cartItems.filter(
-        (item): item is CartItem => item !== null
-    );
-
-    const cartMap = new Map<Id<"products">, CartItem>(
-        validCartItems.map(item => [item.productId, item])
-    );
+const cartMap = new Map(
+    cartItems
+        .filter((item) => item !== null)
+        .map((item) => [
+            item.productId,
+            item
+        ])
+);
 
     const toCart = async (
         productId: Id<"products">,
@@ -83,7 +84,7 @@ export default function Wishlist() {
                             </div>
                         </section>
                     ) : (
-                        <motion.div 
+                        <motion.div
                             initial="hidden"
                             animate="visible"
                             variants={{
@@ -93,7 +94,7 @@ export default function Wishlist() {
                                         staggerChildren: 0.5
                                     },
                                 },
-                            }} 
+                            }}
                             className="grid grid-cols-2 lg:grid-cols-3 tablet:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 3xl:grid-cols-5 gap-4 lg:gap-6"
                         >
                             {wishListItems?.map((item) => {
@@ -125,8 +126,7 @@ type CartItem = {
     price: number;
     quantity: number;
     category: string;
-    imageId?: string;
-    imageUrl?: string;
+    imageUrls: string[];
 };
 
 type WishlistCardProps = {
@@ -190,15 +190,18 @@ function WishlistCard({ item, cartItem, onAddToCart, cartLoading, isInCart }: Wi
             h-full flex flex-col
         ">
             <div className="relative w-full aspect-square bg-muted-section">
-                {/* <Image
-                    src={item.image}
-                    alt={item.product?.name}
-                    fill
-                    className="object-cover"
-                /> */}
-                <div className="absolute inset-0 flex items-center justify-center text-muted">
-                    No Image
-                </div>
+                {item.product?.imageUrls?.[0] ? (
+                    <Image
+                        src={item.product?.imageUrls?.[0]}
+                        alt={item.product?.name}
+                        fill
+                        className="object-cover"
+                    />
+                ) : (
+                    <div className="absolute inset-0 flex items-center justify-center text-muted">
+                        No Image
+                    </div>
+                )}
             </div>
 
             <div className="flex flex-col flex-1 p-3 lg:p-4 space-y-2 lg:space-y-3">
@@ -216,11 +219,10 @@ function WishlistCard({ item, cartItem, onAddToCart, cartLoading, isInCart }: Wi
                             <button
                                 onClick={() => decreaseQty()}
                                 disabled={cartItem.quantity === 1}
-                                className={`text-xs px-2 py-1.5 lg:px-3 lg:py-2 font-bold transition ${
-                                    cartItem.quantity === 1
+                                className={`text-xs px-2 py-1.5 lg:px-3 lg:py-2 font-bold transition ${cartItem.quantity === 1
                                         ? "text-gray-400 cursor-not-allowed"
                                         : "text-secondary hover:bg-gray-100"
-                                }`}
+                                    }`}
                             >
                                 −
                             </button>
